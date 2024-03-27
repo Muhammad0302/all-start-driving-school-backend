@@ -1,0 +1,48 @@
+import mongoose, { Model, Schema } from 'mongoose';
+
+interface InstructorInterface {
+	save(): unknown;
+	name: string;
+	phone_number: string;
+	driver_licence_number: string;
+	DI_number: string;
+	no_of_lesson: number;
+}
+
+const instructorSchema = new Schema<InstructorInterface>(
+	{
+		name: {
+			type: String,
+			required: true,
+		},
+		phone_number: {
+			type: String,
+			required: true,
+		},
+		no_of_lesson: {
+			type: Number,
+			default: 0,
+		},
+		driver_licence_number: {
+			type: String,
+			required: true,
+			// unique: true,
+		},
+		DI_number: {
+			type: String,
+			required: true,
+			// unique: true,
+		},
+	},
+	{
+		timestamps: true, // Automatically adds createdAt and updatedAt fields
+	}
+);
+
+const InstructorModel: Model<InstructorInterface> = mongoose.model(
+	'Instructor',
+	instructorSchema
+);
+
+export { InstructorInterface };
+export default InstructorModel;
