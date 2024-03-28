@@ -3,9 +3,9 @@ import mongoose, { Model, Schema } from 'mongoose';
 
 
 interface StdAssignToInstructor extends Document {
-         id:  mongoose.Types.ObjectId;
-  studentId:  mongoose.Types.ObjectId;
-instructorId: mongoose.Types.ObjectId;
+  id: mongoose.Types.ObjectId;
+  studentId: mongoose.Types.ObjectId;
+  instructorId: mongoose.Types.ObjectId;
   // Add more fields as needed
 }
 
@@ -29,8 +29,8 @@ const studentsAssingedToInstructorSchema = new Schema<StdAssignToInstructor>({
 });
 
 const StdAssignToInstructor: Model<StdAssignToInstructor> = mongoose.model(
-	'stdassigntointstrs',
-	studentsAssingedToInstructorSchema
+  'stdassigntointstrs',
+  studentsAssingedToInstructorSchema
 );
 
 export default StdAssignToInstructor;
