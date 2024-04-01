@@ -8,10 +8,7 @@ interface RateInterface extends Document {
 
 const rateSchema = new Schema<RateInterface>(
 	{
-		// instruct_id: {
-		// 	type: mongoose.Schema.Types.ObjectId,
-		// 	ref: 'Instructor',
-		// },
+		
 		rate: {
 			type: Number,
 			required: true,

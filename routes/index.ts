@@ -4,6 +4,15 @@ import userRoutes from './userRoutes';
 import instructorRoutes from './instructorRoutes';
 import studentRoutes from './studentRoute';
 import packageRoutes from './packageRoutes';
+import lessonRoutes from './lessonRoutes';
+import privateLessonRoutes from './privateLessonRoutes';
+import studnetPaymentRoutes from './studnetPaymentRoutes';
+import rateRoutes from './rateRoutes';
+import instructorPaymentRoutes from './instructorPaymentRoutes';
+
+
+
+
 
 
 const router = express.Router();
@@ -16,6 +25,21 @@ router.use('/instructor', instructorRoutes);
 router.use('/student', studentRoutes);
 
 router.use('/package', packageRoutes);
+
+router.use('/lesson', lessonRoutes);
+
+router.use('/privateLesson', privateLessonRoutes);
+
+router.use('/studnetPayment', studnetPaymentRoutes);
+
+router.use('/rate', rateRoutes);
+
+router.use('/instructorPayment', instructorPaymentRoutes);
+
+
+
+
+
 
 
 

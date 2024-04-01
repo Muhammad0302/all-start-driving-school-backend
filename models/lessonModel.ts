@@ -2,48 +2,39 @@ import mongoose, { Model, Schema, Document } from 'mongoose';
 
 // Define an interface for the Lesson document
 interface LessonInterface extends Document {
-	std_id: mongoose.Types.ObjectId;
 	instruct_id: mongoose.Types.ObjectId;
-	initial_lesson_requested: boolean;
-	packages: string[]; // Assuming packages is an array of strings
-	no_of_lesson: number;
+	std_id: mongoose.Types.ObjectId;
+	package_id:mongoose.Types.ObjectId; 
+	no_of_lesson_compeleted: String;
 	road_test_completion: boolean;
-	lesson_type: string;
 }
 
-// Define the lesson schema
 const lessonSchema = new Schema<LessonInterface>(
 	{
-		std_id: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'Student',
-		},
 		instruct_id: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Instructor',
 		},
-		initial_lesson_requested: {
-			type: Boolean,
-			required: true,
+		std_id: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Student',
 		},
-		packages: [
-			{
-				type: String,
+	
+		package_id: {
+				type:mongoose.Schema.Types.ObjectId ,
+				ref: 'Package',
 				required: true,
 			},
-		],
-		no_of_lesson: {
-			type: Number,
+		
+		no_of_lesson_compeleted: {
+			type: String,
 			required: true,
 		},
 		road_test_completion: {
 			type: Boolean,
 			required: true,
 		},
-		lesson_type: {
-			type: String,
-			required: true,
-		},
+		
 	},
 	{
 		timestamps: true, // Automatically adds createdAt and updatedAt fields
@@ -55,5 +46,5 @@ const LessonModel: Model<LessonInterface> = mongoose.model<LessonInterface>(
 	'Lesson',
 	lessonSchema
 );
-
+export {LessonInterface};
 export default LessonModel;
