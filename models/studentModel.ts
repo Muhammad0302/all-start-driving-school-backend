@@ -5,12 +5,15 @@ interface StudentInterface {
 	instructor_id: mongoose.Types.ObjectId;
 	supportive_id: string;
 	name: string;
+	email: string;
 	address: string;
 	phone_number: string;
+	gender: string;
+	dob: string;
 	licence_no: string;
 	mto_certification: 'yes' | 'no';
-	total_payment_received: number;
-	score: string;
+	// total_payment_received: number;
+	// score: string;
 	licence_issue_date: Date;
 	licence_expiry_date: Date;
 	course_start_date: Date;
@@ -31,11 +34,24 @@ const studentSchema = new Schema<StudentInterface>(
 			type: String,
 			required: true,
 		},
+		email: {
+			type: String,
+			required: true,
+			unique:true,
+		},
 		address: {
 			type: String,
 			required: true,
 		},
 		phone_number: {
+			type: String,
+			required: true,
+		},
+		dob: {
+			type: String,
+			required: true,
+		},
+		gender: {
 			type: String,
 			required: true,
 		},
@@ -48,14 +64,14 @@ const studentSchema = new Schema<StudentInterface>(
 			enum: ['yes', 'no'],
 			required: true,
 		},
-		total_payment_received: {
-			type: Number,
-			required: true,
-		},
-		score: {
-			type: String,
-			required: true,
-		},
+		// total_payment_received: {
+		// 	type: Number,
+		// 	required: true,
+		// },
+		// score: {
+		// 	type: String,
+		// 	required: true,
+		// },
 		licence_issue_date: {
 			type: Date,
 			required: true,

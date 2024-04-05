@@ -2,12 +2,16 @@ import { Request, Response } from 'express';
 import Instructor, { InstructorInterface } from '../models/instructorModel';
 
 const addInstructor = async (req: Request, res: Response) => {
-	const { name, phone_number, driver_licence_number, DI_number } = req.body;
+	const { name, phone_number,email,address,dob,gender,driver_licence_number, DI_number } = req.body;
 
 	try {
 		const newInstructor: InstructorInterface = new Instructor({
 			name,
 			phone_number,
+			email,
+			address,
+			dob,
+			gender,
 			driver_licence_number,
 			DI_number,
 		});
@@ -39,7 +43,7 @@ const addInstructor = async (req: Request, res: Response) => {
 };
 const updateInstructor = async (req: Request, res: Response) => {
 	const instructorId = req.params.id; // Assuming the instructor ID is passed as a URL parameter
-	const { name, phone_number, driver_licence_number, DI_number } = req.body;
+	const { name, phone_number,email,address,dob,gender,driver_licence_number, DI_number } = req.body;
 
 	try {
 		// Find the instructor by ID and update its details
@@ -48,6 +52,10 @@ const updateInstructor = async (req: Request, res: Response) => {
 			{
 				name,
 				phone_number,
+				email,
+				address,
+				dob,
+				gender,
 				driver_licence_number,
 				DI_number,
 			},

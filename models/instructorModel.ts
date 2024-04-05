@@ -4,6 +4,10 @@ interface InstructorInterface {
 	save(): unknown;
 	name: string;
 	phone_number: string;
+	email: string;
+	address: string;
+	dob: string;
+	gender: string;
 	driver_licence_number: string;
 	DI_number: string;
 	no_of_lesson: number;
@@ -19,10 +23,28 @@ const instructorSchema = new Schema<InstructorInterface>(
 			type: String,
 			required: true,
 		},
-		no_of_lesson: {
-			type: Number,
-			default: 0,
+		email: {
+			type: String,
+			required: true,
+			unique:true,
 		},
+		address: {
+			type: String,
+			required: true,
+		},
+		dob: {
+			type: String,
+			required: true,
+		},
+		gender: {
+			type: String,
+			required: true,
+		},
+		
+		// no_of_lesson: {
+		// 	type: Number,
+		// 	default: 0,
+		// },
 		driver_licence_number: {
 			type: String,
 			required: true,

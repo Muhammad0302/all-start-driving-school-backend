@@ -9,6 +9,8 @@ import privateLessonRoutes from './privateLessonRoutes';
 import studnetPaymentRoutes from './studnetPaymentRoutes';
 import rateRoutes from './rateRoutes';
 import instructorPaymentRoutes from './instructorPaymentRoutes';
+import packageAssigToStudRoutes from './packageAssigToStudRoutes';
+
 
 
 
@@ -35,6 +37,9 @@ router.use('/studnetPayment', studnetPaymentRoutes);
 router.use('/rate', rateRoutes);
 
 router.use('/instructorPayment', instructorPaymentRoutes);
+
+router.use('/packageAssigToStud', packageAssigToStudRoutes);
+
 
 
 
