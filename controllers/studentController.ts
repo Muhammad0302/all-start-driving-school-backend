@@ -5,7 +5,8 @@ const addStudent = async (req: Request, res: Response) => {
 	const {
 		instructor_id,
 		supportive_id,
-		name,
+		first_name,
+		last_name,
 		email,
 		address,
 		phone_number,
@@ -24,7 +25,8 @@ const addStudent = async (req: Request, res: Response) => {
 		const newStudent: StudentInterface = new Student({
 			    instructor_id,
 				supportive_id,
-				name,
+				first_name,
+				last_name,
 				email,
 				address,
 				phone_number,
@@ -70,7 +72,8 @@ const updateStudent = async (req: Request, res: Response) => {
 	const {
 		instructor_id,
 		supportive_id,
-		name,
+		first_name,
+		last_name,
 		email,
 		address,
 		phone_number,
@@ -92,7 +95,8 @@ const updateStudent = async (req: Request, res: Response) => {
 			{
 				instructor_id,
 				supportive_id,
-				name,
+				first_name,
+				last_name,
 				email,
 				address,
 				phone_number,

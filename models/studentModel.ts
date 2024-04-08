@@ -4,7 +4,8 @@ interface StudentInterface {
 	save(): unknown;
 	instructor_id: mongoose.Types.ObjectId;
 	supportive_id: string;
-	name: string;
+	first_name: string;
+	last_name: string;
 	email: string;
 	address: string;
 	phone_number: string;
@@ -30,7 +31,11 @@ const studentSchema = new Schema<StudentInterface>(
 			required: true,
 			// unique: true,
 		},
-		name: {
+		first_name: {
+			type: String,
+			required: true,
+		},
+		last_name: {
 			type: String,
 			required: true,
 		},

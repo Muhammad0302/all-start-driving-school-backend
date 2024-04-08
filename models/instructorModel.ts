@@ -2,7 +2,8 @@ import mongoose, { Model, Schema } from 'mongoose';
 
 interface InstructorInterface {
 	save(): unknown;
-	name: string;
+	first_name: string;
+	last_name: string;
 	phone_number: string;
 	email: string;
 	address: string;
@@ -15,7 +16,11 @@ interface InstructorInterface {
 
 const instructorSchema = new Schema<InstructorInterface>(
 	{
-		name: {
+		first_name: {
+			type: String,
+			required: true,
+		},
+		last_name: {
 			type: String,
 			required: true,
 		},
