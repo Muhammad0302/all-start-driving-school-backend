@@ -7,6 +7,7 @@ interface InstructorInterface {
 	phone_number: string;
 	email: string;
 	address: string;
+	hired_as: string;
 	dob: string;
 	gender: string;
 	driver_licence_number: string;
@@ -34,6 +35,10 @@ const instructorSchema = new Schema<InstructorInterface>(
 			unique:true,
 		},
 		address: {
+			type: String,
+			required: true,
+		},
+		hired_as: {
 			type: String,
 			required: true,
 		},
