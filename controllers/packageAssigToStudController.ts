@@ -81,6 +81,33 @@ const updatePackageAssigToStud = async (req: Request, res: Response) => {
   }
 };
 
+const getStudentsByInstructor = async (req: Request, res: Response) => {
+  try {
+    const instructorId = req.params.id;
+
+    if (!instructorId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Instructor ID is required',
+      });
+    }
+
+    const students = await packageAssigToStudModel.find({ instructor_id: instructorId }).populate('std_id');
+
+    res.status(200).json({
+      success: true,
+      message: 'Students assigned to the instructor retrieved successfully',
+      students: students,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+    });
+  }
+};
+
 const deletePackageAssigToStud = async (req: Request, res: Response) => {
   try {
     const deletedpackageAssigToStud = await packageAssigToStudModel.findByIdAndDelete(req.params.id);
@@ -104,4 +131,4 @@ const deletePackageAssigToStud = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllpackagesAssigToStuds, createPackageAssigToStud, getPackageAssigToStudById, updatePackageAssigToStud, deletePackageAssigToStud };
+export { getAllpackagesAssigToStuds, createPackageAssigToStud, getPackageAssigToStudById, updatePackageAssigToStud, deletePackageAssigToStud,getStudentsByInstructor };

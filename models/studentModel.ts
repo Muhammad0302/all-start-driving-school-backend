@@ -11,7 +11,7 @@ interface StudentInterface {
 	gender: string;
 	dob: string;
 	licence_no: string;
-	mto_certification: 'yes' | 'no';
+	// mto_certification: 'yes' | 'no';
 	// total_payment_received: number;
 	// score: string;
 	licence_issue_date: Date;
@@ -59,11 +59,11 @@ const studentSchema = new Schema<StudentInterface>(
 			type: String,
 			required: true,
 		},
-		mto_certification: {
-			type: String,
-			enum: ['yes', 'no'],
-			required: true,
-		},
+		// mto_certification: {
+		// 	type: String,
+		// 	enum: ['yes', 'no'],
+		// 	required: true,
+		// },
 		// total_payment_received: {
 		// 	type: Number,
 		// 	required: true,

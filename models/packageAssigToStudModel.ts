@@ -3,8 +3,11 @@ import mongoose, { Model, Schema, Document } from 'mongoose';
 // Define an interface for the Lesson document
 interface packageAssigToStudInterface extends Document {
 	
+	instructor_id: mongoose.Types.ObjectId;
 	std_id: mongoose.Types.ObjectId;
 	package_id:mongoose.Types.ObjectId; 
+	paymentPlan: string;
+	paymentType: string;
 	advance: number;
 	remainingAmount: number;
 	
@@ -13,6 +16,11 @@ interface packageAssigToStudInterface extends Document {
 const packageAssigToStudSchema = new Schema<packageAssigToStudInterface>(
 	{
 	
+		instructor_id: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Instructor',
+		},
+
 		std_id: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Student',
@@ -23,6 +31,14 @@ const packageAssigToStudSchema = new Schema<packageAssigToStudInterface>(
 				ref: 'Package',
 				required: true,
 			},	
+        paymentPlan: {
+        	type:String,
+        	required: true,
+        },	
+		paymentType: {
+        	type:String,
+        	required: true,
+        },	
 		advance: {
 			type:Number,
 			required: true,
