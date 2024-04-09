@@ -5,16 +5,15 @@ const addStudent = async (req: Request, res: Response) => {
 	const {
 		instructor_id,
 		supportive_id,
-		name,
+		firstName,
+		lastName,
 		email,
 		address,
 		phone_number,
 		gender,
 		dob,
 		licence_no,
-		mto_certification,
-		total_payment_received,
-		score,
+
 		licence_issue_date,
 		licence_expiry_date,
 		course_start_date,
@@ -22,21 +21,20 @@ const addStudent = async (req: Request, res: Response) => {
 
 	try {
 		const newStudent: StudentInterface = new Student({
-			    instructor_id,
-				supportive_id,
-				name,
-				email,
-				address,
-				phone_number,
-				gender,
-				dob,
-				licence_no,
-				mto_certification,
-				total_payment_received,
-				score,
-				licence_issue_date,
-				licence_expiry_date,
-				course_start_date,
+			instructor_id,
+			supportive_id,
+			firstName,
+			lastName,
+			email,
+			address,
+			phone_number,
+			gender,
+			dob,
+			licence_no,
+
+			licence_issue_date,
+			licence_expiry_date,
+			course_start_date,
 		});
 
 		// Save the new student to the database
@@ -70,16 +68,14 @@ const updateStudent = async (req: Request, res: Response) => {
 	const {
 		instructor_id,
 		supportive_id,
-		name,
+		firstName,
+		lastName,
 		email,
 		address,
 		phone_number,
 		gender,
 		dob,
 		licence_no,
-		mto_certification,
-		total_payment_received,
-		score,
 		licence_issue_date,
 		licence_expiry_date,
 		course_start_date,
@@ -92,16 +88,14 @@ const updateStudent = async (req: Request, res: Response) => {
 			{
 				instructor_id,
 				supportive_id,
-				name,
+				firstName,
+				lastName,
 				email,
 				address,
 				phone_number,
 				gender,
 				dob,
 				licence_no,
-				mto_certification,
-				total_payment_received,
-				score,
 				licence_issue_date,
 				licence_expiry_date,
 				course_start_date,
@@ -193,121 +187,167 @@ const getAllStudents = async (req: Request, res: Response) => {
 	}
 };
 
-	const stdAssignToInstructor = async (req: Request, res: Response) => {
-		const {
-			instructorid,
-			studentid
-		} = req.body;
-		try {
-			const newStudent: any = new StdAssignToInstructor({
-				instructorId:instructorid,
-			     studentId:studentid
-			});
+const stdAssignToInstructor = async (req: Request, res: Response) => {
+	const { instructorid, studentid } = req.body;
+	try {
+		const newStudent: any = new StdAssignToInstructor({
+			instructorId: instructorid,
+			studentId: studentid,
+		});
 
-			// Save the new student to the database
-			const result = await newStudent.save();
-			// Check if the student was saved successfully
-			if (result) {
-				// If the student was saved successfully, send success response
-				res.status(201).json({
-					success: true,
-					message: 'Student assign to instructor successfully',
-					student: result, // Send the added student data in the response
-				});
-			} else {
-				// If there was an issue saving the student, send a server error response
-				res.status(500).json({
-					success: false,
-					message: 'Failed to add student',
-				});
-			}
-		} catch (error) {
-			console.error(error);
+		// Save the new student to the database
+		const result = await newStudent.save();
+		// Check if the student was saved successfully
+		if (result) {
+			// If the student was saved successfully, send success response
+			res.status(201).json({
+				success: true,
+				message: 'Student assign to instructor successfully',
+				student: result, // Send the added student data in the response
+			});
+		} else {
+			// If there was an issue saving the student, send a server error response
 			res.status(500).json({
 				success: false,
-				message: 'Internal server error',
+				message: 'Failed to add student',
 			});
 		}
-	};
-		// Get operation for a specific student
-		const editStdAssignToInstructor = async (req: Request, res: Response) => {
-			const { id } = req.params;
-			try {
-				const editStdAssignToInstructor = await StdAssignToInstructor.findById(id);
-				if (!editStdAssignToInstructor) {
-					return res.status(404).json({
-						success: false,
-						message: ' Not found'
-					});
-				}
-				res.status(200).json({
-					success: true,
-					message: 'Retrieved successfully',
-					result: editStdAssignToInstructor
-				});
-			} catch (error) {
-				console.error(error);
-				res.status(500).json({
-					success: false,
-					message: 'Internal server error'
-				});
-			}
-		};
-	// Update operation
-	const updateStdAssignToInstructor = async (req: Request, res: Response) => {
-		const { id } = req.params;
-		const { instructorId, studentId } = req.body;
-		try {
-			const updateStdAssignToInstructor = await StdAssignToInstructor.findByIdAndUpdate(id, {
-				instructorId: instructorId,
-				studentId: studentId
-			}, { new: true });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+// Get operation for a specific student
+const editStdAssignToInstructor = async (req: Request, res: Response) => {
+	const { id } = req.params;
+	try {
+		const editStdAssignToInstructor = await StdAssignToInstructor.findById(id);
+		if (!editStdAssignToInstructor) {
+			return res.status(404).json({
+				success: false,
+				message: ' Not found',
+			});
+		}
+		res.status(200).json({
+			success: true,
+			message: 'Retrieved successfully',
+			result: editStdAssignToInstructor,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+// Update operation
+const updateStdAssignToInstructor = async (req: Request, res: Response) => {
+	const { id } = req.params;
+	const { instructorId, studentId } = req.body;
+	try {
+		const updateStdAssignToInstructor =
+			await StdAssignToInstructor.findByIdAndUpdate(
+				id,
+				{
+					instructorId: instructorId,
+					studentId: studentId,
+				},
+				{ new: true }
+			);
+		res.status(200).json({
+			success: true,
+			message: 'Record updated successfully',
+			result: updateStdAssignToInstructor,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+
+const getAllStdAssignToInstructor = async (req: Request, res: Response) => {
+	try {
+		const student = await StdAssignToInstructor.find();
+		res.status(200).json({
+			success: true,
+			message: 'Students retrieved successfully',
+			student: student,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+
+// Delete operation
+const deleteStdAssignToInstructor = async (req: Request, res: Response) => {
+	const { id } = req.params;
+	try {
+		await StdAssignToInstructor.findByIdAndDelete(id);
+		res.status(200).json({
+			success: true,
+			message: 'Record deleted successfully',
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+
+const getStudentById = async (req: Request, res: Response) => {
+	const studentId = req.params.id; // Assuming the student ID is passed as a URL parameter
+
+	try {
+		// Find the student by ID in the database
+		const student = await Student.findById(studentId);
+
+		// Check if the student was found
+		if (student) {
+			// If the student was found, send success response with student data
 			res.status(200).json({
 				success: true,
-				message: 'Record updated successfully',
-				result: updateStdAssignToInstructor
+				message: 'Student found',
+				student: student,
 			});
-		} catch (error) {
-			console.error(error);
-			res.status(500).json({
+		} else {
+			// If the student was not found, send a not found response
+			res.status(404).json({
 				success: false,
-				message: 'Internal server error'
+				message: 'Student not found',
 			});
 		}
-	};
-	
-	const getAllStdAssignToInstructor = async (req: Request, res: Response) => {
-		try {
-			const student = await StdAssignToInstructor.find();
-			res.status(200).json({
-				success: true,
-				message: 'Students retrieved successfully',
-				student: student
-			});
-		} catch (error) {
-			console.error(error);
-			res.status(500).json({
-				success: false,
-				message: 'Internal server error'
-			});
-		}
-	};
-	
-	// Delete operation
-	const deleteStdAssignToInstructor = async (req: Request, res: Response) => {
-		const { id } = req.params;
-		try {
-			await StdAssignToInstructor.findByIdAndDelete(id);
-			res.status(200).json({
-				success: true,
-				message: 'Record deleted successfully'
-			});
-		} catch (error) {
-			console.error(error);
-			res.status(500).json({
-				success: false,
-				message: 'Internal server error'
-			});
-		}
-	};
-export { addStudent, updateStudent, deleteStudent, getAllStudents,stdAssignToInstructor,editStdAssignToInstructor,updateStdAssignToInstructor,getAllStdAssignToInstructor,deleteStdAssignToInstructor };
+	} catch (error) {
+		// If there was an internal server error, send a server error response
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+
+export {
+	addStudent,
+	updateStudent,
+	deleteStudent,
+	getAllStudents,
+	stdAssignToInstructor,
+	editStdAssignToInstructor,
+	updateStdAssignToInstructor,
+	getAllStdAssignToInstructor,
+	deleteStdAssignToInstructor,
+	getStudentById,
+};

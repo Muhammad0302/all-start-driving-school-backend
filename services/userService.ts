@@ -203,7 +203,12 @@ const loginUser = async ({ email, password }: loginAdminInterface) => {
 
 		return {
 			success: true,
-			user: { email: user.email, username: user.username, token },
+			user: {
+				email: user.email,
+				username: user.username,
+				token,
+				id: user._id,
+			},
 		};
 	} catch (error) {
 		console.error(error);

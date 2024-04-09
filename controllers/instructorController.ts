@@ -2,11 +2,24 @@ import { Request, Response } from 'express';
 import Instructor, { InstructorInterface } from '../models/instructorModel';
 
 const addInstructor = async (req: Request, res: Response) => {
-	const { name, phone_number,email,address,dob,gender,driver_licence_number, DI_number } = req.body;
+	const {
+		firstName,
+		lastName,
+		hiringOn,
+		phone_number,
+		email,
+		address,
+		dob,
+		gender,
+		driver_licence_number,
+		DI_number,
+	} = req.body;
 
 	try {
 		const newInstructor: InstructorInterface = new Instructor({
-			name,
+			firstName,
+			lastName,
+			hiringOn,
 			phone_number,
 			email,
 			address,
@@ -43,14 +56,25 @@ const addInstructor = async (req: Request, res: Response) => {
 };
 const updateInstructor = async (req: Request, res: Response) => {
 	const instructorId = req.params.id; // Assuming the instructor ID is passed as a URL parameter
-	const { name, phone_number,email,address,dob,gender,driver_licence_number, DI_number } = req.body;
+	const {
+		firstName,
+		lastName,
+		phone_number,
+		email,
+		address,
+		dob,
+		gender,
+		driver_licence_number,
+		DI_number,
+	} = req.body;
 
 	try {
 		// Find the instructor by ID and update its details
 		const result = await Instructor.findByIdAndUpdate(
 			instructorId,
 			{
-				name,
+				firstName,
+				lastName,
 				phone_number,
 				email,
 				address,
@@ -86,6 +110,37 @@ const updateInstructor = async (req: Request, res: Response) => {
 		});
 	}
 };
+const getInstructorById = async (req: Request, res: Response) => {
+	const instructorId = req.params.id; // Assuming the instructor ID is passed as a URL parameter
+
+	try {
+		// Find the instructor by ID
+		const instructor = await Instructor.findById(instructorId);
+
+		// Check if the instructor exists
+		if (instructor) {
+			res.status(200).json({
+				success: true,
+				message: 'Instructor found',
+				instructor: instructor,
+			});
+		} else {
+			// If the instructor was not found, send a not found response
+			res.status(404).json({
+				success: false,
+				message: 'Instructor not found',
+			});
+		}
+	} catch (error) {
+		console.error(error);
+		// If there was an internal server error, send a server error response
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+
 const deleteInstructor = async (req: Request, res: Response) => {
 	const instructorId = req.params.id; // Assuming the instructor ID is passed as a URL parameter
 
@@ -146,4 +201,10 @@ const getAllInstructors = async (req: Request, res: Response) => {
 	}
 };
 
-export { addInstructor, updateInstructor, deleteInstructor, getAllInstructors };
+export {
+	addInstructor,
+	updateInstructor,
+	deleteInstructor,
+	getAllInstructors,
+	getInstructorById,
+};

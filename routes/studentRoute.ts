@@ -11,6 +11,7 @@ import {
 	updateStdAssignToInstructor,
 	getAllStdAssignToInstructor,
 	deleteStdAssignToInstructor,
+	getStudentById,
 } from '../controllers/studentController';
 
 const router = express.Router();
@@ -22,11 +23,26 @@ router.delete('/deleteStudent/:id', verifyToken, deleteStudent);
 router.get('/getAllStudents', verifyToken, getAllStudents);
 
 router.post('/stdAssignToInstructor', verifyToken, stdAssignToInstructor);
-router.get('/editStdAssignToInstructor/:id', verifyToken, editStdAssignToInstructor);
-router.post('/updateStdAssignToInstructor/:id', verifyToken, updateStdAssignToInstructor);
-router.get('/getAllStdAssignToInstructor', verifyToken, getAllStdAssignToInstructor);
-router.delete('/deleteStdAssignToInstructor/:id', verifyToken, deleteStdAssignToInstructor);
-
-
+router.get(
+	'/editStdAssignToInstructor/:id',
+	verifyToken,
+	editStdAssignToInstructor
+);
+router.get('/getStudentById/:id', verifyToken, getStudentById);
+router.post(
+	'/updateStdAssignToInstructor/:id',
+	verifyToken,
+	updateStdAssignToInstructor
+);
+router.get(
+	'/getAllStdAssignToInstructor',
+	verifyToken,
+	getAllStdAssignToInstructor
+);
+router.delete(
+	'/deleteStdAssignToInstructor/:id',
+	verifyToken,
+	deleteStdAssignToInstructor
+);
 
 export default router;
