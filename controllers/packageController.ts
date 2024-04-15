@@ -90,6 +90,30 @@ const update = async (req: Request, resp: Response) => {
   }
 };
 
+const getById = async (req: Request, resp: Response) => {
+  const { id } = req.params; // Retrieve the package ID from the request parameters
+  try {
+      const packageDetails = await Package.findById(id); // Find the package by ID in the database
+      if (packageDetails) {
+          resp.status(200).json({
+              success: true,
+              message: "Package retrieved successfully",
+              package: packageDetails, // Send the retrieved package data in the response
+          });
+      } else {
+          resp.status(404).json({
+              success: false,
+              message: "Package not found",
+          });
+      }
+  } catch (error) {
+      console.error(error);
+      resp.status(500).json({
+          success: false,
+          message: "Internal server error",
+      });
+  }
+};
 const remove = async (req: Request, resp: Response) => {
   const { id } = req.params; // Retrieve the package ID from the request parameters
   try {
@@ -115,4 +139,4 @@ const remove = async (req: Request, resp: Response) => {
   }
 };
 
-export {getAll, add,  update, remove,};
+export {getAll, add,  update, remove,getById,};

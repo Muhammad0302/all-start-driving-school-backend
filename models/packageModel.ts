@@ -1,21 +1,16 @@
 import mongoose, { Model, Schema } from 'mongoose';
 
 interface packageInterface extends Document {
-    id: mongoose.Types.ObjectId;
+   
     save(): unknown;
     name: string;
-    price: number;
-    no_of_lesson: number;
+    price: string;
+    no_of_lesson: string;
     // Add more fields as needed
 }
 const packageSchema = new Schema<packageInterface>(
     {
-        id: {
-        	type: mongoose.Schema.Types.ObjectId,
-        	ref: 'id',
-            required: true
-        },
-
+        
         name: [
             {
                 type: String,
@@ -23,11 +18,11 @@ const packageSchema = new Schema<packageInterface>(
             },
         ],
         price: {
-            type: Number,
+            type: String,
             required: true,
         },
         no_of_lesson: {
-            type: Number,
+            type: String,
             required: true,
         },
     },
@@ -36,6 +31,7 @@ const packageSchema = new Schema<packageInterface>(
     }
 
 );
+
 const packageModel: Model<packageInterface> = mongoose.model<packageInterface>(
     'Package',
     packageSchema
