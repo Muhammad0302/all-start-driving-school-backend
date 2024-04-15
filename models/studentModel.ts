@@ -4,8 +4,8 @@ interface StudentInterface {
 	save(): unknown;
 	instructor_id: mongoose.Types.ObjectId;
 	supportive_id: string;
-	first_name: string;
-	last_name: string;
+	firstName: string;
+	lastName: string;
 	email: string;
 	address: string;
 	phone_number: string;
@@ -28,21 +28,21 @@ const studentSchema = new Schema<StudentInterface>(
 		},
 		supportive_id: {
 			type: String,
-			required: true,
+			// required: true,
 			// unique: true,
 		},
-		first_name: {
+		firstName: {
 			type: String,
 			required: true,
 		},
-		last_name: {
+		lastName: {
 			type: String,
 			required: true,
 		},
 		email: {
 			type: String,
 			required: true,
-			unique:true,
+			unique: true,
 		},
 		address: {
 			type: String,
@@ -64,11 +64,11 @@ const studentSchema = new Schema<StudentInterface>(
 			type: String,
 			required: true,
 		},
-		// mto_certification: {
-		// 	type: String,
-		// 	enum: ['yes', 'no'],
-		// 	required: true,
-		// },
+		mto_certification: {
+			type: String,
+			enum: ['yes', 'no'],
+			// required: true,
+		},
 		// total_payment_received: {
 		// 	type: Number,
 		// 	required: true,

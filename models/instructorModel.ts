@@ -2,14 +2,15 @@ import mongoose, { Model, Schema } from 'mongoose';
 
 interface InstructorInterface {
 	save(): unknown;
-	first_name: string;
-	last_name: string;
+	firstName: string;
+	lastName: string;
 	phone_number: string;
 	email: string;
 	address: string;
 	hired_as: string;
 	dob: string;
 	gender: string;
+	hiringOn: string;
 	driver_licence_number: string;
 	DI_number: string;
 	no_of_lesson: number;
@@ -17,11 +18,11 @@ interface InstructorInterface {
 
 const instructorSchema = new Schema<InstructorInterface>(
 	{
-		first_name: {
+		firstName: {
 			type: String,
 			required: true,
 		},
-		last_name: {
+		lastName: {
 			type: String,
 			required: true,
 		},
@@ -32,7 +33,7 @@ const instructorSchema = new Schema<InstructorInterface>(
 		email: {
 			type: String,
 			required: true,
-			unique:true,
+			unique: true,
 		},
 		address: {
 			type: String,
@@ -46,11 +47,15 @@ const instructorSchema = new Schema<InstructorInterface>(
 			type: String,
 			required: true,
 		},
+		hiringOn: {
+			type: String,
+			required: true,
+		},
 		gender: {
 			type: String,
 			required: true,
 		},
-		
+
 		// no_of_lesson: {
 		// 	type: Number,
 		// 	default: 0,
