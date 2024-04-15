@@ -10,7 +10,6 @@ interface InstructorInterface {
 	hired_as: string;
 	dob: string;
 	gender: string;
-	hiringOn: string;
 	driver_licence_number: string;
 	DI_number: string;
 	no_of_lesson: number;
@@ -44,10 +43,6 @@ const instructorSchema = new Schema<InstructorInterface>(
 			required: true,
 		},
 		dob: {
-			type: String,
-			required: true,
-		},
-		hiringOn: {
 			type: String,
 			required: true,
 		},
