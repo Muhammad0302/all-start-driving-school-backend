@@ -64,11 +64,11 @@ const studentSchema = new Schema<StudentInterface>(
 			type: String,
 			required: true,
 		},
-		mto_certification: {
-			type: String,
-			enum: ['yes', 'no'],
-			// required: true,
-		},
+		// mto_certification: {
+		// 	type: String,
+		// 	enum: ['yes', 'no'],
+		// 	// required: true,
+		// },
 		// total_payment_received: {
 		// 	type: Number,
 		// 	required: true,
