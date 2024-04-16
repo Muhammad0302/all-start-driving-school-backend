@@ -9,6 +9,7 @@ interface packageAssigToStudInterface extends Document {
 	paymentPlan: string;
 	paymentType: string;
 	advance: number;
+	total: number;
 	remainingAmount: number;
 	
 }
@@ -46,7 +47,11 @@ const packageAssigToStudSchema = new Schema<packageAssigToStudInterface>(
 		remainingAmount: {
 			type:Number,
 			required: true,
-		},					
+		},	
+		total: {
+			type:Number,
+			required: true,
+		},						
 	},
 	{
 		timestamps: true, // Automatically adds createdAt and updatedAt fields

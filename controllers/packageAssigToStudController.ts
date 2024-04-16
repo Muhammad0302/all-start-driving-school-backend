@@ -1,12 +1,33 @@
 import { Request, Response } from 'express';
 import packageAssigToStudModel, { packageAssigToStudInterface } from '../models/packageAssigToStudModel';
 
+// const getAllpackagesAssigToStuds = async (req: Request, res: Response) => {
+//   try {
+//     const packagesAssigToStuds = await packageAssigToStudModel.find();
+//     res.status(200).json({
+//       success: true,
+//       message: 'packages assign too students retrieved successfully',
+//       packagesAssigToStuds: packagesAssigToStuds,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error',
+//     });
+//   }
+// };
 const getAllpackagesAssigToStuds = async (req: Request, res: Response) => {
   try {
-    const packagesAssigToStuds = await packageAssigToStudModel.find();
+    const packagesAssigToStuds = await packageAssigToStudModel
+      .find()
+      .populate('package_id')
+      .populate('std_id')
+      .populate('instructor_id');
+
     res.status(200).json({
       success: true,
-      message: 'packages assign too students retrieved successfully',
+      message: 'Packages assigned to students retrieved successfully',
       packagesAssigToStuds: packagesAssigToStuds,
     });
   } catch (error) {
@@ -37,13 +58,19 @@ const createPackageAssigToStud = async (req: Request, res: Response) => {
 
 const getPackageAssigToStudById = async (req: Request, res: Response) => {
   try {
-    const packageAssigToStud = await packageAssigToStudModel.findById(req.params.id);
+    const packageAssigToStud = await packageAssigToStudModel
+      .findById(req.params.id)
+      .populate('package_id')
+      .populate('std_id')
+      .populate('instructor_id');
+
     if (!packageAssigToStud) {
       return res.status(404).json({
         success: false,
         message: 'Package assign to students not found',
       });
     }
+
     res.status(200).json({
       success: true,
       message: 'Package assign to students retrieved successfully',
