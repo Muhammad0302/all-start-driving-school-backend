@@ -25,6 +25,35 @@ const getAllpackagesAssigToStuds = async (req: Request, res: Response) => {
 	}
 };
 
+const getAssignPackageByStdId = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params; // Extract ID from request parameters
+
+		const packageAssigToStud = await packageAssigToStudModel
+			.find({ std_id: id }) // Find the package assignment by ID
+			.populate('package_id'); // Populate student details
+
+		if (!packageAssigToStud) {
+			// If package assignment is not found, return 404
+			return res.status(404).json({
+				success: false,
+				message: 'Package assignment not found',
+			});
+		}
+
+		res.status(200).json({
+			success: true,
+			packageAssigToStud: packageAssigToStud,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+
 const createPackageAssigToStud = async (req: Request, res: Response) => {
 	try {
 		const packageAssigToStud = await packageAssigToStudModel.create(req.body);
@@ -56,7 +85,7 @@ const getPackageAssigToStudById = async (req: Request, res: Response) => {
 		res.status(200).json({
 			success: true,
 			message: 'Package assign to students retrieved successfully',
-			packageAssigToStud: packageAssigToStud,
+			data: packageAssigToStud,
 		});
 	} catch (error) {
 		console.error(error);
@@ -153,4 +182,5 @@ export {
 	updatePackageAssigToStud,
 	deletePackageAssigToStud,
 	getStudentsByInstructor,
+	getAssignPackageByStdId,
 };

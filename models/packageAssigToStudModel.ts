@@ -9,6 +9,7 @@ interface packageAssigToStudInterface extends Document {
 	paymentType: string;
 	advance: string;
 	remainingAmount: string;
+	total: string;
 }
 
 const packageAssigToStudSchema = new Schema<packageAssigToStudInterface>(
@@ -34,15 +35,15 @@ const packageAssigToStudSchema = new Schema<packageAssigToStudInterface>(
 		},
 		paymentType: {
 			type: String,
-			required: true,
 		},
 		advance: {
 			type: String,
-			required: true,
+		},
+		total: {
+			type: String,
 		},
 		remainingAmount: {
 			type: String,
-			required: true,
 		},
 	},
 	{
