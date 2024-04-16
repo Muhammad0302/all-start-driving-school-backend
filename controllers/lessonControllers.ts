@@ -23,14 +23,14 @@ const createLesson = async (req: Request, res: Response) => {
     const lesson = await LessonModel.create(req.body);
     res.status(201).json({
       success: true,
-      message: 'Lesson created successfully',
+      message: 'No of lesson compeleted added successfully',
       lesson: lesson,
     });
   } catch (error) {
     console.error(error);
     res.status(400).json({
       success: false,
-      message: 'Failed to create lesson',
+      message: 'Failed to added no of lesson ',
     });
   }
 };
@@ -46,7 +46,7 @@ const getLessonById = async (req: Request, res: Response) => {
     }
     res.status(200).json({
       success: true,
-      message: 'Lesson retrieved successfully',
+      message: 'No of lesson compeleted retrieved successfully',
       lesson: lesson,
     });
   } catch (error) {
@@ -69,14 +69,14 @@ const updateLesson = async (req: Request, res: Response) => {
     }
     res.status(200).json({
       success: true,
-      message: 'Lesson updated successfully',
+      message: 'No of lesson compeleted updated successfully',
       lesson: updatedLesson,
     });
   } catch (error) {
     console.error(error);
     res.status(400).json({
       success: false,
-      message: 'Failed to update lesson',
+      message: 'Failed to update no of lesson compeleted',
     });
   }
 };
@@ -92,7 +92,7 @@ const deleteLesson = async (req: Request, res: Response) => {
     }
     res.status(200).json({
       success: true,
-      message: 'Lesson deleted successfully',
+      message: 'No of lesson compeleted deleted successfully',
       lesson: deletedLesson,
     });
   } catch (error) {

@@ -2,29 +2,29 @@ import mongoose, { Model, Schema, Document } from 'mongoose';
 
 // Define an interface for the Lesson document
 interface LessonInterface extends Document {
-	instruct_id: mongoose.Types.ObjectId;
+	// instruct_id: mongoose.Types.ObjectId;
 	std_id: mongoose.Types.ObjectId;
-	package_id:mongoose.Types.ObjectId; 
+	// package_id:mongoose.Types.ObjectId; 
 	no_of_lesson_compeleted: String;
 	road_test_completion: boolean;
 }
 
 const lessonSchema = new Schema<LessonInterface>(
 	{
-		instruct_id: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'Instructor',
-		},
+		// instruct_id: {
+		// 	type: mongoose.Schema.Types.ObjectId,
+		// 	ref: 'Instructor',
+		// },
 		std_id: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Student',
 		},
 	
-		package_id: {
-				type:mongoose.Schema.Types.ObjectId ,
-				ref: 'Package',
-				required: true,
-			},
+		// package_id: {
+		// 		type:mongoose.Schema.Types.ObjectId ,
+		// 		ref: 'Package',
+		// 		required: true,
+		// 	},
 		
 		no_of_lesson_compeleted: {
 			type: String,
