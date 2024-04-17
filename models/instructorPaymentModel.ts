@@ -4,12 +4,13 @@ import mongoose, { Model, Schema, Document } from 'mongoose';
 interface instructorPaymentInterface extends Document {
 	instruct_id: mongoose.Types.ObjectId;
 	name: String;
-	phone_number:number; 
+	phone_number: number;
 	rate: number;
-	no_of_lesson: string;
+	noOfLessonToPay: number;
 	tax: number;
-	total_compensation: number;
-
+	chaqueNo: number;
+	issueDate: Date;
+	compensation: number;
 }
 
 const instructorPaymentSchema = new Schema<instructorPaymentInterface>(
@@ -18,32 +19,30 @@ const instructorPaymentSchema = new Schema<instructorPaymentInterface>(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Instructor',
 		},
-		name: {
-			type:String,
-	
+		rate: {
+			type: Number,
+			required: true,
 		},
-	
-		phone_number: {
-				type:Number ,
-			    required: true,
-			},
-		rate:{
-            type:Number,
-            required:true
-        },
-		no_of_lesson: {
-			type: String,
+		noOfLessonToPay: {
+			type: Number,
 			required: true,
 		},
 		tax: {
 			type: Number,
 			required: true,
 		},
-        total_compensation:{
-            type:Number,
-            required:true,
-        },
-		
+		chaqueNo: {
+			type: Number,
+			required: true,
+		},
+		issueDate: {
+			type: Date,
+			required: true,
+		},
+		compensation: {
+			type: Number,
+			required: true,
+		},
 	},
 	{
 		timestamps: true, // Automatically adds createdAt and updatedAt fields
@@ -51,9 +50,10 @@ const instructorPaymentSchema = new Schema<instructorPaymentInterface>(
 );
 
 // Create the LessonModel
-const InstructorPaymentModel: Model<instructorPaymentInterface> = mongoose.model<instructorPaymentInterface>(
-	'InstructorPayment',
-	instructorPaymentSchema
-);
-export {instructorPaymentInterface};
+const InstructorPaymentModel: Model<instructorPaymentInterface> =
+	mongoose.model<instructorPaymentInterface>(
+		'InstructorPayment',
+		instructorPaymentSchema
+	);
+export { instructorPaymentInterface };
 export default InstructorPaymentModel;
