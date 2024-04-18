@@ -4,11 +4,11 @@ import mongoose, { Model, Schema, Document } from 'mongoose';
 interface instructorPaymentInterface extends Document {
 	instruct_id: mongoose.Types.ObjectId;
 	name: String;
-	phone_number: number;
-	rate: number;
+	phone_number: string;
+	rate: string;
 	noOfLessonToPay: number;
-	tax: number;
-	chaqueNo: number;
+	tax: string;
+	chaqueNo: string;
 	issueDate: Date;
 	compensation: number;
 }
@@ -20,7 +20,7 @@ const instructorPaymentSchema = new Schema<instructorPaymentInterface>(
 			ref: 'Instructor',
 		},
 		rate: {
-			type: Number,
+			type: String,
 			required: true,
 		},
 		noOfLessonToPay: {
@@ -28,11 +28,11 @@ const instructorPaymentSchema = new Schema<instructorPaymentInterface>(
 			required: true,
 		},
 		tax: {
-			type: Number,
+			type: String,
 			required: true,
 		},
 		chaqueNo: {
-			type: Number,
+			type: String,
 			required: true,
 		},
 		issueDate: {
