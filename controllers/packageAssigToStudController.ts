@@ -149,7 +149,8 @@ const getStudentsByInstructor = async (req: Request, res: Response) => {
 					// instructor_id: 0,
 				}
 			)
-			.populate('std_id');
+			.populate('std_id')
+			.populate('package_id', { no_of_lesson: 1 });
 		const instructor = await InstructorModel.findById(instructorId, {
 			firstName: 1,
 			lastName: 1,
