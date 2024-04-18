@@ -3,6 +3,7 @@ import packageAssigToStudModel, {
 	packageAssigToStudInterface,
 } from '../models/packageAssigToStudModel';
 import InstructorModel from '../models/instructorModel';
+import StudentModel from '../models/studentModel';
 
 const getAllpackagesAssigToStuds = async (req: Request, res: Response) => {
 	try {
@@ -149,7 +150,10 @@ const getStudentsByInstructor = async (req: Request, res: Response) => {
 					// instructor_id: 0,
 				}
 			)
-			.populate('std_id');
+			.populate('std_id')
+			.populate('package_id',{
+				no_of_lesson:1,
+			});
 		const instructor = await InstructorModel.findById(instructorId, {
 			firstName: 1,
 			lastName: 1,
@@ -160,6 +164,58 @@ const getStudentsByInstructor = async (req: Request, res: Response) => {
 			message: 'Students assigned to the instructor retrieved successfully',
 			students: students,
 			instructor: instructor,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+
+const getInstructorsByStudent = async (req: Request, res: Response) => {
+	try {
+		const StudentId = req.params.id;
+
+		if (!StudentId) {
+			return res.status(400).json({
+				success: false,
+				message: 'Instructor ID is required',
+			});
+		}
+
+		const instructors = await packageAssigToStudModel
+			.find(
+				{ std_id: StudentId },
+				{
+				_id:1,	
+					// __v: 0,
+					// package_id: 0,
+					// paymentPlan: 0,
+					// paymentType: 0,
+					// advance: 0,
+					// createdAt: 1,
+					// updatedAt: 1,
+					// remainingAmount: 0,
+					// instructor_id: 0,
+				}
+			)
+			.populate('instructor_id')
+			.populate('package_id',{
+				no_of_lesson:1,
+			});
+			
+		const student = await StudentModel.findById(StudentId, {
+			firstName: 1,
+			lastName: 1,
+		});
+
+		res.status(200).json({
+			success: true,
+			message: 'Instructor assigned to the Students retrieved successfully',
+			instructors: instructors,
+			student: student,
 		});
 	} catch (error) {
 		console.error(error);
@@ -202,4 +258,5 @@ export {
 	deletePackageAssigToStud,
 	getStudentsByInstructor,
 	getAssignPackageByStdId,
+  getInstructorsByStudent,
 };
