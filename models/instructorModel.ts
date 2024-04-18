@@ -46,15 +46,16 @@ const instructorSchema = new Schema<InstructorInterface>(
 			type: String,
 			required: true,
 		},
+
 		gender: {
 			type: String,
 			required: true,
 		},
 
-		// no_of_lesson: {
-		// 	type: Number,
-		// 	default: 0,
-		// },
+		no_of_lesson: {
+			type: Number,
+			default: 0,
+		},
 		driver_licence_number: {
 			type: String,
 			required: true,
