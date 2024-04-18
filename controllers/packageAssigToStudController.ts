@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import packageAssigToStudModel, {
 	packageAssigToStudInterface,
 } from '../models/packageAssigToStudModel';
+import InstructorModel from '../models/instructorModel';
 
 const getAllpackagesAssigToStuds = async (req: Request, res: Response) => {
 	try {
@@ -134,13 +135,31 @@ const getStudentsByInstructor = async (req: Request, res: Response) => {
 		}
 
 		const students = await packageAssigToStudModel
-			.find({ instructor_id: instructorId })
+			.find(
+				{ instructor_id: instructorId },
+				{
+					// __v: 0,
+					// package_id: 0,
+					// paymentPlan: 0,
+					// paymentType: 0,
+					// advance: 0,
+					createdAt: 1,
+					updatedAt: 1,
+					// remainingAmount: 0,
+					// instructor_id: 0,
+				}
+			)
 			.populate('std_id');
+		const instructor = await InstructorModel.findById(instructorId, {
+			firstName: 1,
+			lastName: 1,
+		});
 
 		res.status(200).json({
 			success: true,
 			message: 'Students assigned to the instructor retrieved successfully',
 			students: students,
+			instructor: instructor,
 		});
 	} catch (error) {
 		console.error(error);
