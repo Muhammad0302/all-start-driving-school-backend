@@ -7,6 +7,7 @@ import {
 	getPackageAssigToStudById,
 	updatePackageAssigToStud,
 	getStudentsByInstructor,
+	getInstructorsByStudent,
 	deletePackageAssigToStud,
 	getAssignPackageByStdId,
 } from '../controllers/packageAssigToStudController';
@@ -25,6 +26,11 @@ router.get(
 	'/getStudentsByInstructor/:id',
 	verifyToken,
 	getStudentsByInstructor
+);
+router.get(
+	'/getInstructorsByStudent/:id',
+	verifyToken,
+	getInstructorsByStudent
 );
 router.delete('/delete/:id', verifyToken, deletePackageAssigToStud);
 
