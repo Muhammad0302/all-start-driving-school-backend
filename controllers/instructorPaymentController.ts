@@ -3,6 +3,7 @@ import InstructorPaymentModel, {
 	instructorPaymentInterface,
 } from '../models/instructorPaymentModel';
 import InstructorModel from '../models/instructorModel';
+import mongoose from 'mongoose';
 const getAllInstructorPayments = async (req: Request, res: Response) => {
 	try {
 		// Perform aggregation query
@@ -78,21 +79,65 @@ const createInstructorPayment = async (req: Request, res: Response) => {
 	}
 };
 
+// const getPaymentByInstructorId = async (req: Request, res: Response) => {
+// 	try {
+// 		const InstructorPayment = await InstructorPaymentModel.find({
+// 			instruct_id: req.params.id,
+// 		});
+// 		if (!InstructorPayment) {
+// 			return res.status(404).json({
+// 				success: false,
+// 				message: 'Instructor payment not found',
+// 			});
+// 		}
+// 		res.status(200).json({
+// 			success: true,
+// 			message: 'Instructor payment fetch successfully',
+// 			InstructorPayment: InstructorPayment,
+// 		});
+// 	} catch (error) {
+// 		console.error(error);
+// 		res.status(500).json({
+// 			success: false,
+// 			message: 'Internal server error',
+// 		});
+// 	}
+// };
+
 const getPaymentByInstructorId = async (req: Request, res: Response) => {
 	try {
-		const InstructorPayment = await InstructorPaymentModel.find({
-			instruct_id: req.params.id,
-		});
-		if (!InstructorPayment) {
+		const instructorId = req.params.id;
+
+		const [instructorPayment, totalCompensation] = await Promise.all([
+			InstructorPaymentModel.find({ instruct_id: instructorId }),
+			InstructorPaymentModel.aggregate([
+				{
+					$match: { instruct_id: new mongoose.Types.ObjectId(instructorId) },
+				},
+				{
+					$group: {
+						_id: null,
+						totalCompensation: { $sum: { $toDouble: '$compensation' } },
+					},
+				},
+			]),
+		]);
+
+		if (!instructorPayment) {
 			return res.status(404).json({
 				success: false,
 				message: 'Instructor payment not found',
 			});
 		}
+
 		res.status(200).json({
 			success: true,
 			message: 'Instructor payment fetch successfully',
-			InstructorPayment: InstructorPayment,
+			InstructorPayment: instructorPayment,
+			totalCompensation:
+				totalCompensation.length > 0
+					? totalCompensation[0].totalCompensation
+					: 0,
 		});
 	} catch (error) {
 		console.error(error);

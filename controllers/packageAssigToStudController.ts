@@ -250,6 +250,46 @@ const deletePackageAssigToStud = async (req: Request, res: Response) => {
 	}
 };
 
+const changeInstructor = async (req: Request, res: Response) => {
+	try {
+		const { instructor_id, id } = req.body;
+
+		// Find the record to be updated
+		const existingRecord = await packageAssigToStudModel.findById(id);
+
+		// Check if the record exists
+		if (!existingRecord) {
+			return res.status(404).json({
+				success: false,
+				message: 'Record not found',
+			});
+		}
+
+		// Clone the existing record and update the instructor ID
+		const newRecord = { ...existingRecord.toObject() };
+		newRecord.instructor_id = instructor_id;
+
+		// Set _id to undefined to ensure it gets inserted as a new record
+		newRecord._id = undefined;
+
+		// Save the updated record as a new record
+		const insertedRecord = await packageAssigToStudModel.create(newRecord);
+
+		// Return the newly created record in the response
+		res.status(201).json({
+			success: true,
+			message: 'Instructor changed successfully',
+			packageAssigToStud: insertedRecord,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+
 export {
 	getAllpackagesAssigToStuds,
 	createPackageAssigToStud,
@@ -259,4 +299,5 @@ export {
 	getStudentsByInstructor,
 	getAssignPackageByStdId,
 	getInstructorsByStudent,
+	changeInstructor,
 };

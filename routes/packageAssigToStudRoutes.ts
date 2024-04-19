@@ -10,11 +10,13 @@ import {
 	getInstructorsByStudent,
 	deletePackageAssigToStud,
 	getAssignPackageByStdId,
+	changeInstructor,
 } from '../controllers/packageAssigToStudController';
 
 const router = express.Router();
 router.get('/get', verifyToken, getAllpackagesAssigToStuds);
 router.post('/add', verifyToken, createPackageAssigToStud);
+router.post('/changeinstructor', verifyToken, changeInstructor);
 router.get(
 	'/getPackageAssigToStudById/:id',
 	verifyToken,
