@@ -78,6 +78,31 @@ const createInstructorPayment = async (req: Request, res: Response) => {
 	}
 };
 
+const getPaymentByInstructorId = async (req: Request, res: Response) => {
+	try {
+		const InstructorPayment = await InstructorPaymentModel.find({
+			instruct_id: req.params.id,
+		});
+		if (!InstructorPayment) {
+			return res.status(404).json({
+				success: false,
+				message: 'Instructor payment not found',
+			});
+		}
+		res.status(200).json({
+			success: true,
+			message: 'Instructor payment fetch successfully',
+			InstructorPayment: InstructorPayment,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+
 const getInstructorPaymentById = async (req: Request, res: Response) => {
 	try {
 		const InstructorPayment = await InstructorPaymentModel.findById(
@@ -159,4 +184,5 @@ export {
 	getInstructorPaymentById,
 	updateInstructorPayment,
 	deleteInstructorPayment,
+	getPaymentByInstructorId,
 };
