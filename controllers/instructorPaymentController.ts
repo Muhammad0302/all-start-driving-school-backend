@@ -64,10 +64,27 @@ const getAllInstructorPayments = async (req: Request, res: Response) => {
 
 const createInstructorPayment = async (req: Request, res: Response) => {
 	try {
+		const { noOfLessonToPay, instruct_id } = req.body;
+
+		// Find the instructor by ID
+		const instructor = await InstructorModel.findById(instruct_id);
+
+		if (!instructor) {
+			return res.status(404).json({
+				success: false,
+				message: 'Instructor not found',
+			});
+		}
+
+		// Subtract the noOfLessonToPay from the instructor's noOfLesson
+		instructor.no_of_lesson -= noOfLessonToPay;
+
+		// Save the updated instructor data
+		await instructor.save();
 		const InstructorPayment = await InstructorPaymentModel.create(req.body);
 		res.status(201).json({
 			success: true,
-			message: 'Instructor payment created successfully',
+			message: 'Pay successfully',
 			InstructorPayment: InstructorPayment,
 		});
 	} catch (error) {

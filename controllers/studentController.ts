@@ -19,9 +19,40 @@ const addStudent = async (req: Request, res: Response) => {
 	} = req.body;
 
 	try {
+		const supportiveIdPrefix = supportive_id === 'Online' ? 'I' : 'E';
+
+		// Fetch the last registered student
+		const lastStudent = await Student.findOne().sort({ createdAt: -1 });
+
+		// Extract the counter from the last registered student's supportive ID
+		const lastCounter = lastStudent
+			? Number(lastStudent.supportive_id.split('/').pop())
+			: 1;
+
+		// Extract the month from the last registered student's supportive ID
+		const lastStudentSupportiveIdMonth = lastStudent
+			? Number(lastStudent.supportive_id.split('/')[2])
+			: null;
+
+		// Determine if the last registered student's supportive ID month is different from the current date's month
+		const isDifferentMonth =
+			lastStudentSupportiveIdMonth !== new Date().getMonth() + 1;
+
+		// Determine the next counter value based on the condition
+		const nextCounter = isDifferentMonth ? 1 : lastCounter + 1;
+		// Determine the next counter value
+		// const nextCounter = lastCounter + 1;
+
+		// Get the last two digits of the current year
+		const lastTwoDigitsOfYear = new Date().getFullYear() % 100;
+
+		const newSupportiveId = `${supportiveIdPrefix}/${lastTwoDigitsOfYear}/${
+			new Date().getMonth() + 1
+		}/${nextCounter}`;
+
 		const newStudent: StudentInterface = new Student({
 			instructor_id,
-			supportive_id,
+			supportive_id: newSupportiveId,
 			firstName,
 			lastName,
 			email,
@@ -30,7 +61,6 @@ const addStudent = async (req: Request, res: Response) => {
 			gender,
 			dob,
 			licence_no,
-
 			licence_issue_date,
 			licence_expiry_date,
 			course_start_date,
