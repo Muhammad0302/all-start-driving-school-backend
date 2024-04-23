@@ -38,10 +38,10 @@ const instructorSchema = new Schema<InstructorInterface>(
 			type: String,
 			required: true,
 		},
-		hired_as: {
-			type: String,
-			required: true,
-		},
+		// hired_as: {
+		// 	type: String,
+		// 	required: true,
+		// },
 		dob: {
 			type: String,
 			required: true,
