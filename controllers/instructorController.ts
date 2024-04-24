@@ -205,10 +205,60 @@ const getAllInstructors = async (req: Request, res: Response) => {
 	}
 };
 
+const getAllUnassignedInstructor = async (req: Request, res: Response) => {
+	try {
+		const instructors = await Instructor.aggregate([
+			{
+				$lookup: {
+					from: 'packageAssigToStud', // Assuming the collection name is 'packageAssigToStud'
+					localField: '_id',
+					foreignField: 'instructor_id',
+					as: 'assignedStudents',
+				},
+			},
+			{
+				$group: {
+					_id: '$_id',
+					instructor: { $first: '$$ROOT' },
+					totalAssignedStudents: { $sum: { $size: '$assignedStudents' } }, // Calculate total assigned students
+				},
+			},
+			{
+				$match: {
+					totalAssignedStudents: { $lte: 5 }, // Filter out instructors with 5 or fewer assigned students
+				},
+			},
+			{
+				$replaceRoot: { newRoot: '$instructor' }, // Replace root document with the instructor document
+			},
+		]);
+
+		if (instructors.length > 0) {
+			res.status(200).json({
+				success: true,
+				message: 'Instructors retrieved successfully',
+				instructors: instructors,
+			});
+		} else {
+			res.status(404).json({
+				success: false,
+				message: 'No instructors found',
+			});
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+
 export {
 	addInstructor,
 	updateInstructor,
 	deleteInstructor,
 	getAllInstructors,
 	getInstructorById,
+	getAllUnassignedInstructor,
 };

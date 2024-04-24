@@ -4,12 +4,14 @@ import mongoose, { Model, Schema, Document } from 'mongoose';
 interface packageAssigToStudInterface extends Document {
 	instructor_id: mongoose.Types.ObjectId;
 	std_id: mongoose.Types.ObjectId;
-	package_id: mongoose.Types.ObjectId;
-	paymentPlan: string;
-	paymentType: string;
-	advance: string;
-	remainingAmount: string;
-	total: string;
+	no_of_lesson: number;
+	road_test: string;
+	// package_id: mongoose.Types.ObjectId;
+	// paymentPlan: string;
+	// paymentType: string;
+	// advance: string;
+	// remainingAmount: string;
+	// total: string;
 }
 
 const packageAssigToStudSchema = new Schema<packageAssigToStudInterface>(
@@ -23,28 +25,35 @@ const packageAssigToStudSchema = new Schema<packageAssigToStudInterface>(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Student',
 		},
-
-		package_id: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'Package',
+		no_of_lesson: {
+			type: Number,
 			required: true,
 		},
-		paymentPlan: {
+		road_test: {
 			type: String,
 			required: true,
 		},
-		paymentType: {
-			type: String,
-		},
-		advance: {
-			type: String,
-		},
-		total: {
-			type: String,
-		},
-		remainingAmount: {
-			type: String,
-		},
+		// package_id: {
+		// 	type: mongoose.Schema.Types.ObjectId,
+		// 	ref: 'Package',
+		// 	required: true,
+		// },
+		// paymentPlan: {
+		// 	type: String,
+		// 	required: true,
+		// },
+		// paymentType: {
+		// 	type: String,
+		// },
+		// advance: {
+		// 	type: String,
+		// },
+		// total: {
+		// 	type: String,
+		// },
+		// remainingAmount: {
+		// 	type: String,
+		// },
 	},
 	{
 		timestamps: true, // Automatically adds createdAt and updatedAt fields

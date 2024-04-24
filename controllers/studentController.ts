@@ -216,6 +216,45 @@ const getAllStudents = async (req: Request, res: Response) => {
 	}
 };
 
+const getAllUnAssignedStudents = async (req: Request, res: Response) => {
+	try {
+		const unAssignedStudents = await Student.aggregate([
+			{
+				$lookup: {
+					from: 'packageAssigToStud', // Assuming the collection name is 'packageAssigToStud'
+					localField: '_id',
+					foreignField: 'std_id',
+					as: 'assignedInstructor',
+				},
+			},
+			{
+				$match: {
+					assignedInstructor: { $eq: [] }, // Filter out students with no assigned instructor
+				},
+			},
+		]);
+
+		if (unAssignedStudents.length > 0) {
+			res.status(200).json({
+				success: true,
+				message: 'Unassigned students retrieved successfully',
+				students: unAssignedStudents,
+			});
+		} else {
+			res.status(404).json({
+				success: false,
+				message: 'No unassigned students found',
+			});
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+
 const stdAssignToInstructor = async (req: Request, res: Response) => {
 	const { instructorid, studentid } = req.body;
 	try {
@@ -379,4 +418,5 @@ export {
 	getAllStdAssignToInstructor,
 	deleteStdAssignToInstructor,
 	getStudentById,
+	getAllUnAssignedStudents,
 };

@@ -10,12 +10,12 @@ const getAllpackagesAssigToStuds = async (req: Request, res: Response) => {
 		const packagesAssigToStuds = await packageAssigToStudModel
 			.find()
 			.populate('std_id') // Populate package details
-			.populate('instructor_id') // Populate instructor details
-			.populate('package_id'); // Populate student details
+			.populate('instructor_id'); // Populate instructor details
+		// .populate('package_id'); // Populate student details
 
 		res.status(200).json({
 			success: true,
-			message: 'packages assign too students retrieved successfully',
+			message: 'Assign instructor fetch successfully',
 			packagesAssigToStuds: packagesAssigToStuds,
 		});
 	} catch (error) {
@@ -32,8 +32,8 @@ const getAssignPackageByStdId = async (req: Request, res: Response) => {
 		const { id } = req.params; // Extract ID from request parameters
 
 		const packageAssigToStud = await packageAssigToStudModel
-			.find({ std_id: id }) // Find the package assignment by ID
-			.populate('package_id'); // Populate student details
+			.find({ std_id: id })
+			.populate('package_id');
 
 		if (!packageAssigToStud) {
 			// If package assignment is not found, return 404
@@ -55,13 +55,42 @@ const getAssignPackageByStdId = async (req: Request, res: Response) => {
 		});
 	}
 };
+const getAssignById = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params; // Extract ID from request parameters
+
+		const packageAssigToStud = await packageAssigToStudModel
+			.findById(id)
+			.populate('std_id')
+			.populate('instructor_id');
+
+		if (!packageAssigToStud) {
+			// If package assignment is not found, return 404
+			return res.status(404).json({
+				success: false,
+				message: 'Data not found',
+			});
+		}
+
+		res.status(200).json({
+			success: true,
+			AssignData: packageAssigToStud,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
 
 const createPackageAssigToStud = async (req: Request, res: Response) => {
 	try {
 		const packageAssigToStud = await packageAssigToStudModel.create(req.body);
 		res.status(201).json({
 			success: true,
-			message: 'Package assign to students created successfully',
+			message: 'Package assigned to students successfully',
 			packageAssigToStud: packageAssigToStud,
 		});
 	} catch (error) {
@@ -300,4 +329,5 @@ export {
 	getAssignPackageByStdId,
 	getInstructorsByStudent,
 	changeInstructor,
+	getAssignById,
 };
