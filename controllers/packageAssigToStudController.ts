@@ -101,6 +101,28 @@ const createPackageAssigToStud = async (req: Request, res: Response) => {
 		});
 	}
 };
+const updatePackageAssignToStudent = async (req: Request, res: Response) => {
+	try {
+		const packageAssigToStud = await packageAssigToStudModel.findOneAndUpdate(
+			{ std_id: req.params.id }, // Filter criteria
+			{ $set: req.body }, // Update fields
+			{ new: true } // Options: Return updated document
+		);
+		console.log('THe update api get called:', packageAssigToStud);
+
+		res.status(201).json({
+			success: true,
+			message: 'Package assigned to students successfully',
+			packageAssigToStud: packageAssigToStud,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(400).json({
+			success: false,
+			message: 'Failed to create package assign to students',
+		});
+	}
+};
 
 const getPackageAssigToStudById = async (req: Request, res: Response) => {
 	try {
@@ -330,4 +352,5 @@ export {
 	getInstructorsByStudent,
 	changeInstructor,
 	getAssignById,
+	updatePackageAssignToStudent,
 };

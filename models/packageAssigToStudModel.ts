@@ -6,7 +6,8 @@ interface packageAssigToStudInterface extends Document {
 	std_id: mongoose.Types.ObjectId;
 	no_of_lesson: number;
 	road_test: string;
-	// package_id: mongoose.Types.ObjectId;
+	package_id: mongoose.Types.ObjectId;
+	price_per_lesson: number;
 	// paymentPlan: string;
 	// paymentType: string;
 	// advance: string;
@@ -27,17 +28,21 @@ const packageAssigToStudSchema = new Schema<packageAssigToStudInterface>(
 		},
 		no_of_lesson: {
 			type: Number,
-			required: true,
+			// required: true,
 		},
 		road_test: {
 			type: String,
-			required: true,
+			// required: true,
 		},
-		// package_id: {
-		// 	type: mongoose.Schema.Types.ObjectId,
-		// 	ref: 'Package',
-		// 	required: true,
-		// },
+		package_id: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Package',
+			// required: true,
+			default: null,
+		},
+		price_per_lesson: {
+			type: Number,
+		},
 		// paymentPlan: {
 		// 	type: String,
 		// 	required: true,

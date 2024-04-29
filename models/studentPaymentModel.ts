@@ -3,7 +3,7 @@ import mongoose, { Model, Schema, Document } from 'mongoose';
 // Define an interface for the Lesson document
 interface StudentPaymentInterface extends Document {
 	std_id: mongoose.Types.ObjectId;
-	amount: string;
+	amount: number;
 	payment_method: String;
 	date: Date;
 }
@@ -16,7 +16,7 @@ const studentPaymentSchema = new Schema<StudentPaymentInterface>(
 		},
 
 		amount: {
-			type: String,
+			type: Number,
 			required: true,
 		},
 
