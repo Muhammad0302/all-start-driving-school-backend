@@ -7,11 +7,52 @@ import StudentModel from '../models/studentModel';
 
 const getAllpackagesAssigToStuds = async (req: Request, res: Response) => {
 	try {
-		const packagesAssigToStuds = await packageAssigToStudModel
-			.find()
-			.populate('std_id') // Populate package details
-			.populate('instructor_id'); // Populate instructor details
-		// .populate('package_id'); // Populate student details
+		// const packagesAssigToStuds = await packageAssigToStudModel
+		// 	.find()
+		// 	.populate('std_id') // Populate package details
+		// 	.populate('instructor_id'); // Populate instructor details
+		// // .populate('package_id'); // Populate student details
+
+		const packagesAssigToStuds = await packageAssigToStudModel.aggregate([
+			// Stage 1: Group by student_id and get the latest instructor for each student
+			{
+				$group: {
+					_id: '$std_id',
+					id: { $last: '$_id' }, // Get the last (latest) packageAssigToStudModel _id for each student
+					instructor_id: { $last: '$instructor_id' }, // Get the last (latest) instructor ID for each student
+				},
+			},
+			// Stage 2: Populate the instructor details for each student's latest instructor
+			{
+				$lookup: {
+					from: 'instructors',
+					localField: 'instructor_id',
+					foreignField: '_id',
+					as: 'instructor',
+				},
+			},
+			// Stage 3: Unwind the instructor array to get a single instructor object for each student
+			{ $unwind: '$instructor' },
+			// Stage 4: Lookup student details
+			{
+				$lookup: {
+					from: 'students',
+					localField: '_id',
+					foreignField: '_id',
+					as: 'student',
+				},
+			},
+			// Stage 5: Unwind the student array to get a single student object for each result
+			{ $unwind: '$student' },
+			// Stage 6: Project the desired fields
+			{
+				$project: {
+					id: 1, // Include the packageAssigToStudModel _id field
+					instructor: 1,
+					student: 1,
+				},
+			},
+		]);
 
 		res.status(200).json({
 			success: true,
