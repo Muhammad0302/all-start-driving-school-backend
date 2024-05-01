@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Student, { StudentInterface } from '../models/studentModel'; // Assuming the model file and interface are appropriately defined
 import StdAssignToInstructor from '../models/studentsAssignInstructorModel';
+import packageAssigToStudModel from '../models/packageAssigToStudModel';
 const addStudent = async (req: Request, res: Response) => {
 	const {
 		instructor_id,
@@ -218,34 +219,69 @@ const getAllStudents = async (req: Request, res: Response) => {
 
 const getAllUnAssignedStudents = async (req: Request, res: Response) => {
 	try {
-		const unAssignedStudents = await Student.aggregate([
+		// this one is the same api like below but it not working
+		// const unAssignedStudents = await Student.aggregate([
+		// 	{
+		// 		$lookup: {
+		// 			from: 'packageAssigToStud',
+		// 			localField: '_id',
+		// 			foreignField: 'std_id',
+		// 			as: 'assignedInstructor',
+		// 		},
+		// 	},
+		// 	{
+		// 		$match: {
+		// 			assignedInstructor: { $size: 0 }, // Filter out students with no assigned packages
+		// 		},
+		// 	},
+		// ]);
+
+		const unAssignedStudents = await Student.find({
+			_id: { $nin: await packageAssigToStudModel.distinct('std_id') },
+		});
+
+		res.status(200).json({
+			success: true,
+			message: 'Students fetch successfully',
+			students: unAssignedStudents,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+
+const getAllAssignedStudents = async (req: Request, res: Response) => {
+	try {
+		const aggregateResult = await packageAssigToStudModel.aggregate([
 			{
-				$lookup: {
-					from: 'packageAssigToStud', // Assuming the collection name is 'packageAssigToStud'
-					localField: '_id',
-					foreignField: 'std_id',
-					as: 'assignedInstructor',
+				$match: { no_of_lesson: null }, // Filter only where no_of_lesson is null
+			},
+			{
+				$group: {
+					_id: '$std_id', // Group by std_id
+					doc: { $first: '$$ROOT' }, // Keep the first document encountered for each std_id
 				},
 			},
 			{
-				$match: {
-					assignedInstructor: { $eq: [] }, // Filter out students with no assigned instructor
-				},
+				$replaceRoot: { newRoot: '$doc' }, // Replace the root document with the preserved document
 			},
 		]);
 
-		if (unAssignedStudents.length > 0) {
-			res.status(200).json({
-				success: true,
-				message: 'Unassigned students retrieved successfully',
-				students: unAssignedStudents,
-			});
-		} else {
-			res.status(404).json({
-				success: false,
-				message: 'No unassigned students found',
-			});
-		}
+		// Extract the std_id values from the aggregation result
+		const stdIds = aggregateResult.map((result) => result.std_id);
+
+		// Use find query to populate std_id field
+		const assignedStudents = await Student.find({ _id: { $in: stdIds } });
+
+		res.status(200).json({
+			success: true,
+			message: 'Students fetch successfully',
+			students: assignedStudents,
+		});
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({
@@ -419,4 +455,5 @@ export {
 	deleteStdAssignToInstructor,
 	getStudentById,
 	getAllUnAssignedStudents,
+	getAllAssignedStudents,
 };

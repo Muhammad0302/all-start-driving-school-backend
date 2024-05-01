@@ -18,8 +18,10 @@ const getAllpackagesAssigToStuds = async (req: Request, res: Response) => {
 			{
 				$group: {
 					_id: '$std_id',
-					id: { $last: '$_id' }, // Get the last (latest) packageAssigToStudModel _id for each student
-					instructor_id: { $last: '$instructor_id' }, // Get the last (latest) instructor ID for each student
+					id: { $last: '$_id' },
+					instructor_id: { $last: '$instructor_id' },
+					no_of_lesson: { $last: '$no_of_lesson' },
+					road_test: { $last: '$road_test' },
 				},
 			},
 			// Stage 2: Populate the instructor details for each student's latest instructor
@@ -50,6 +52,8 @@ const getAllpackagesAssigToStuds = async (req: Request, res: Response) => {
 					id: 1, // Include the packageAssigToStudModel _id field
 					instructor: 1,
 					student: 1,
+					no_of_lesson: 1,
+					road_test: 1,
 				},
 			},
 		]);

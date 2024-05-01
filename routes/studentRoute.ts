@@ -13,6 +13,7 @@ import {
 	deleteStdAssignToInstructor,
 	getStudentById,
 	getAllUnAssignedStudents,
+	getAllAssignedStudents,
 } from '../controllers/studentController';
 
 const router = express.Router();
@@ -22,7 +23,8 @@ router.post('/addStudent', verifyToken, addStudent);
 router.put('/updateStudent/:id', verifyToken, updateStudent);
 router.delete('/deleteStudent/:id', verifyToken, deleteStudent);
 router.get('/getAllStudents', verifyToken, getAllStudents);
-router.get('/getAllUnAssignStudents', verifyToken, getAllUnAssignedStudents);
+router.get('/getAllStudents', verifyToken, getAllStudents);
+router.get('/getAllAssignStudents', verifyToken, getAllAssignedStudents);
 
 router.post('/stdAssignToInstructor', verifyToken, stdAssignToInstructor);
 router.get(
