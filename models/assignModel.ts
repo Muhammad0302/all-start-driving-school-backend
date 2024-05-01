@@ -1,7 +1,7 @@
 import mongoose, { Model, Schema, Document } from 'mongoose';
 
 // Define an interface for the Lesson document
-interface packageAssigToStudInterface extends Document {
+interface assignInterface extends Document {
 	instructor_id: mongoose.Types.ObjectId;
 	std_id: mongoose.Types.ObjectId;
 	no_of_lesson: number;
@@ -15,7 +15,7 @@ interface packageAssigToStudInterface extends Document {
 	// total: string;
 }
 
-const packageAssigToStudSchema = new Schema<packageAssigToStudInterface>(
+const assignSchema = new Schema<assignInterface>(
 	{
 		instructor_id: {
 			type: mongoose.Schema.Types.ObjectId,
@@ -65,11 +65,10 @@ const packageAssigToStudSchema = new Schema<packageAssigToStudInterface>(
 	}
 );
 
-// Create the packageAssigToStudModel
-const packageAssigToStudModel: Model<packageAssigToStudInterface> =
-	mongoose.model<packageAssigToStudInterface>(
-		'packageAssigToStud',
-		packageAssigToStudSchema
-	);
-export { packageAssigToStudInterface };
-export default packageAssigToStudModel;
+// Create the assignModel
+const assignModel: Model<assignInterface> = mongoose.model<assignInterface>(
+	'assign',
+	assignSchema
+);
+export { assignInterface };
+export default assignModel;

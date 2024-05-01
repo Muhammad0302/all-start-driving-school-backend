@@ -13,7 +13,7 @@ import {
 	changeInstructor,
 	getAssignById,
 	updatePackageAssignToStudent,
-} from '../controllers/packageAssigToStudController';
+} from '../controllers/assignController';
 
 const router = express.Router();
 router.get('/get', verifyToken, getAllpackagesAssigToStuds);

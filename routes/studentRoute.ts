@@ -14,6 +14,7 @@ import {
 	getStudentById,
 	getAllUnAssignedStudents,
 	getAllAssignedStudents,
+	getStudentsByInstructorId,
 } from '../controllers/studentController';
 
 const router = express.Router();
@@ -33,6 +34,11 @@ router.get(
 	editStdAssignToInstructor
 );
 router.get('/getStudentById/:id', verifyToken, getStudentById);
+router.get(
+	'/getStudentByInstructorId/:id',
+	verifyToken,
+	getStudentsByInstructorId
+);
 router.post(
 	'/updateStdAssignToInstructor/:id',
 	verifyToken,

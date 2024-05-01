@@ -9,13 +9,7 @@ import privateLessonRoutes from './privateLessonRoutes';
 import studnetPaymentRoutes from './studnetPaymentRoutes';
 import rateRoutes from './rateRoutes';
 import instructorPaymentRoutes from './instructorPaymentRoutes';
-import packageAssigToStudRoutes from './packageAssigToStudRoutes';
-
-
-
-
-
-
+import assignRoutes from './assignRoutes';
 
 const router = express.Router();
 
@@ -38,14 +32,6 @@ router.use('/rate', rateRoutes);
 
 router.use('/instructorPayment', instructorPaymentRoutes);
 
-router.use('/packageAssigToStud', packageAssigToStudRoutes);
-
-
-
-
-
-
-
-
+router.use('/assign', assignRoutes);
 
 export default router;

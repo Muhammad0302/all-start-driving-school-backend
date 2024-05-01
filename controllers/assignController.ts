@@ -1,19 +1,17 @@
 import { Request, Response } from 'express';
-import packageAssigToStudModel, {
-	packageAssigToStudInterface,
-} from '../models/packageAssigToStudModel';
+import assignModel, { assignInterface } from '../models/assignModel';
 import InstructorModel from '../models/instructorModel';
 import StudentModel from '../models/studentModel';
 
 const getAllpackagesAssigToStuds = async (req: Request, res: Response) => {
 	try {
-		// const packagesAssigToStuds = await packageAssigToStudModel
+		// const packagesAssigToStuds = await assignModel
 		// 	.find()
 		// 	.populate('std_id') // Populate package details
 		// 	.populate('instructor_id'); // Populate instructor details
 		// // .populate('package_id'); // Populate student details
 
-		const packagesAssigToStuds = await packageAssigToStudModel.aggregate([
+		const packagesAssigToStuds = await assignModel.aggregate([
 			// Stage 1: Group by student_id and get the latest instructor for each student
 			{
 				$group: {
@@ -49,7 +47,7 @@ const getAllpackagesAssigToStuds = async (req: Request, res: Response) => {
 			// Stage 6: Project the desired fields
 			{
 				$project: {
-					id: 1, // Include the packageAssigToStudModel _id field
+					id: 1, // Include the assignModel _id field
 					instructor: 1,
 					student: 1,
 					no_of_lesson: 1,
@@ -76,7 +74,7 @@ const getAssignPackageByStdId = async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params; // Extract ID from request parameters
 
-		const packageAssigToStud = await packageAssigToStudModel
+		const packageAssigToStud = await assignModel
 			.find({ std_id: id })
 			.populate('package_id');
 
@@ -104,7 +102,7 @@ const getAssignById = async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params; // Extract ID from request parameters
 
-		const packageAssigToStud = await packageAssigToStudModel
+		const packageAssigToStud = await assignModel
 			.findById(id)
 			.populate('std_id')
 			.populate('instructor_id');
@@ -132,7 +130,7 @@ const getAssignById = async (req: Request, res: Response) => {
 
 const createPackageAssigToStud = async (req: Request, res: Response) => {
 	try {
-		const packageAssigToStud = await packageAssigToStudModel.create(req.body);
+		const packageAssigToStud = await assignModel.create(req.body);
 		res.status(201).json({
 			success: true,
 			message: 'Package assigned to students successfully',
@@ -148,7 +146,7 @@ const createPackageAssigToStud = async (req: Request, res: Response) => {
 };
 const updatePackageAssignToStudent = async (req: Request, res: Response) => {
 	try {
-		const packageAssigToStud = await packageAssigToStudModel.findOneAndUpdate(
+		const packageAssigToStud = await assignModel.findOneAndUpdate(
 			{ std_id: req.params.id }, // Filter criteria
 			{ $set: req.body }, // Update fields
 			{ new: true } // Options: Return updated document
@@ -171,9 +169,7 @@ const updatePackageAssignToStudent = async (req: Request, res: Response) => {
 
 const getPackageAssigToStudById = async (req: Request, res: Response) => {
 	try {
-		const packageAssigToStud = await packageAssigToStudModel.findById(
-			req.params.id
-		);
+		const packageAssigToStud = await assignModel.findById(req.params.id);
 		if (!packageAssigToStud) {
 			return res.status(404).json({
 				success: false,
@@ -196,10 +192,13 @@ const getPackageAssigToStudById = async (req: Request, res: Response) => {
 
 const updatePackageAssigToStud = async (req: Request, res: Response) => {
 	try {
-		const updatedpackageAssigToStud =
-			await packageAssigToStudModel.findByIdAndUpdate(req.params.id, req.body, {
+		const updatedpackageAssigToStud = await assignModel.findByIdAndUpdate(
+			req.params.id,
+			req.body,
+			{
 				new: true,
-			});
+			}
+		);
 		if (!updatedpackageAssigToStud) {
 			return res.status(404).json({
 				success: false,
@@ -231,7 +230,7 @@ const getStudentsByInstructor = async (req: Request, res: Response) => {
 			});
 		}
 
-		const students = await packageAssigToStudModel
+		const students = await assignModel
 			.find(
 				{ instructor_id: instructorId },
 				{
@@ -281,7 +280,7 @@ const getInstructorsByStudent = async (req: Request, res: Response) => {
 			});
 		}
 
-		const instructors = await packageAssigToStudModel
+		const instructors = await assignModel
 			.find(
 				{ std_id: StudentId },
 				{
@@ -324,8 +323,9 @@ const getInstructorsByStudent = async (req: Request, res: Response) => {
 
 const deletePackageAssigToStud = async (req: Request, res: Response) => {
 	try {
-		const deletedpackageAssigToStud =
-			await packageAssigToStudModel.findByIdAndDelete(req.params.id);
+		const deletedpackageAssigToStud = await assignModel.findByIdAndDelete(
+			req.params.id
+		);
 		if (!deletedpackageAssigToStud) {
 			return res.status(404).json({
 				success: false,
@@ -351,7 +351,7 @@ const changeInstructor = async (req: Request, res: Response) => {
 		const { instructor_id, id } = req.body;
 
 		// Find the record to be updated
-		const existingRecord = await packageAssigToStudModel.findById(id);
+		const existingRecord = await assignModel.findById(id);
 
 		// Check if the record exists
 		if (!existingRecord) {
@@ -369,7 +369,7 @@ const changeInstructor = async (req: Request, res: Response) => {
 		newRecord._id = undefined;
 
 		// Save the updated record as a new record
-		const insertedRecord = await packageAssigToStudModel.create(newRecord);
+		const insertedRecord = await assignModel.create(newRecord);
 
 		// Return the newly created record in the response
 		res.status(201).json({
