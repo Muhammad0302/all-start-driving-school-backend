@@ -74,10 +74,14 @@ const getAssignPackageByStdId = async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params; // Extract ID from request parameters
 
-		const packageAssigToStud = await assignModel
-			.find({ std_id: id })
-			.populate('package_id');
+		// const packageAssigToStud = await assignModel
+		// 	.find({ std_id: id })
+		// 	.populate('package_id');
 
+		const packageAssigToStud = await assignModel
+			.findOne({ std_id: id })
+			.sort({ createdAt: -1, _id: -1 }) // Sort by createdAt field in descending order, and then by _id
+			.populate('package_id');
 		if (!packageAssigToStud) {
 			// If package assignment is not found, return 404
 			return res.status(404).json({
@@ -98,6 +102,7 @@ const getAssignPackageByStdId = async (req: Request, res: Response) => {
 		});
 	}
 };
+
 const getAssignById = async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params; // Extract ID from request parameters

@@ -8,6 +8,7 @@ interface assignInterface extends Document {
 	road_test: string;
 	package_id: mongoose.Types.ObjectId;
 	price_per_lesson: number;
+	no_of_lesson_completed: number;
 	// paymentPlan: string;
 	// paymentType: string;
 	// advance: string;
@@ -29,6 +30,10 @@ const assignSchema = new Schema<assignInterface>(
 		no_of_lesson: {
 			type: Number,
 			// required: true,
+		},
+		no_of_lesson_completed: {
+			type: Number,
+			default: 0,
 		},
 		road_test: {
 			type: String,

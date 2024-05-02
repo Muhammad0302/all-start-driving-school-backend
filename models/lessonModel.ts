@@ -33,7 +33,7 @@ const lessonSchema = new Schema<LessonInterface>(
 		},
 		road_test_completion: {
 			type: String,
-			required: true,
+			// required: true,
 		},
 		total_lesson: {
 			type: String,

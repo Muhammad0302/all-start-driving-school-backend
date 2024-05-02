@@ -37,6 +37,7 @@ const createLesson = async (req: Request, res: Response) => {
 	}
 };
 
+
 const getLessonById = async (req: Request, res: Response) => {
 	try {
 		const lesson = await LessonModel.findById(req.params.id);
