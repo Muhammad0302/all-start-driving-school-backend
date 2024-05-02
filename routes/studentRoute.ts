@@ -15,6 +15,7 @@ import {
 	getAllUnAssignedStudents,
 	getAllAssignedStudents,
 	getStudentsByInstructorId,
+	getAssignedStudents,
 } from '../controllers/studentController';
 
 const router = express.Router();
@@ -49,6 +50,7 @@ router.get(
 	verifyToken,
 	getAllStdAssignToInstructor
 );
+router.get('/getAssignStudent', verifyToken, getAssignedStudents);
 router.delete(
 	'/deleteStdAssignToInstructor/:id',
 	verifyToken,

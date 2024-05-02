@@ -28,7 +28,6 @@ const createLesson = async (req: Request, res: Response) => {
 		const updateAssign: any = await assignModel
 			.findOne({ std_id })
 			.sort({ createdAt: -1, _id: -1 });
-
 		updateAssign.no_of_lesson_completed += no_of_lesson_compeleted;
 		if (updateAssign.no_of_lesson_completed === updateAssign.no_of_lesson) {
 			const student: any = await StudentModel.findById(std_id);
@@ -36,7 +35,6 @@ const createLesson = async (req: Request, res: Response) => {
 			student.save();
 		}
 		await updateAssign.save();
-
 		const lesson = await LessonModel.create(req.body);
 		res.status(201).json({
 			success: true,
