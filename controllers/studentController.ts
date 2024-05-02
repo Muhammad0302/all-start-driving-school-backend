@@ -257,24 +257,44 @@ const getStudentsByInstructorId = async (req: Request, res: Response) => {
 const getAssignedStudents = async (req: Request, res: Response) => {
 	try {
 		const assignedStudents = await assignModel.aggregate([
-			// Group by std_id and select the latest record for each student
-			{ $group: { _id: '$std_id', lastRecord: { $last: '$$ROOT' } } },
-			// Project to reshape the document as per your requirements
-
-			// Populate the student details
+			{
+				$sort: { updatedAt: 1 }, // Sort by updatedAt in descending order
+			},
+			{
+				$group: {
+					_id: '$std_id',
+					lastRecord: { $first: '$$ROOT' }, // Keep only the first (latest) record for each student
+				},
+			},
 			{
 				$lookup: {
-					from: 'Student',
-					localField: 'std_id',
+					from: 'students', // Name of the student collection
+					localField: '_id',
 					foreignField: '_id',
 					as: 'student',
 				},
 			},
-			// Project to reshape the document if needed
-			{ $project: { _id: 1, std_id: { $arrayElemAt: ['$student', 0] } } },
-			// Optionally, add more stages as needed
+			{
+				$unwind: '$student',
+			},
+			{
+				$project: {
+					// _id: '$lastRecord._id',
+					// instructor_id: '$lastRecord.instructor_id',
+					// std_id: '$lastRecord.std_id',
+					// no_of_lesson: '$lastRecord.no_of_lesson',
+					// road_test: '$lastRecord.road_test',
+					// package_id: '$lastRecord.package_id',
+					// price_per_lesson: '$lastRecord.price_per_lesson',
+					// createdAt: '$lastRecord.createdAt',
+					// updatedAt: '$lastRecord.updatedAt',
+					// lesson_completed: '$student.lesson_completed',
+					'student._id': 1,
+					'student.firstName': 1,
+					'student.lastName': 1,
+				},
+			},
 		]);
-
 		res.status(200).json({
 			success: true,
 			message: 'Assigned students fetched successfully',

@@ -13,6 +13,7 @@ interface StudentInterface {
 	dob: string;
 	licence_no: string;
 	lesson_completed: string;
+	fee: string;
 	// mto_certification: 'yes' | 'no';
 	// total_payment_received: number;
 	// score: string;
@@ -68,6 +69,10 @@ const studentSchema = new Schema<StudentInterface>(
 		lesson_completed: {
 			type: String,
 			default: 'inprogress',
+		},
+		fee: {
+			type: String,
+			default: 'unpaid',
 		},
 		// mto_certification: {
 		// 	type: String,
