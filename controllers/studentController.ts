@@ -224,7 +224,9 @@ const getStudentsByInstructorId = async (req: Request, res: Response) => {
 		const { id } = req.params; // Assuming instructorIds is an array of instructor ids passed in the request body
 
 		const assignedStudents = await assignModel
-			.find({ instructor_id: id })
+			.find({
+				instructor_id: id,
+			})
 			.populate({
 				path: 'std_id',
 				model: 'Student',

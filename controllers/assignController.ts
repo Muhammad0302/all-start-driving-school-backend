@@ -20,6 +20,7 @@ const getAllpackagesAssigToStuds = async (req: Request, res: Response) => {
 					instructor_id: { $last: '$instructor_id' },
 					no_of_lesson: { $last: '$no_of_lesson' },
 					road_test: { $last: '$road_test' },
+					lesson_completed: { $last: '$no_of_lesson_completed' },
 				},
 			},
 			// Stage 2: Populate the instructor details for each student's latest instructor
@@ -52,6 +53,7 @@ const getAllpackagesAssigToStuds = async (req: Request, res: Response) => {
 					student: 1,
 					no_of_lesson: 1,
 					road_test: 1,
+					lesson_completed: 1,
 				},
 			},
 		]);
