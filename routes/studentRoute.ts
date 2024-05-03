@@ -14,6 +14,8 @@ import {
 	getStudentById,
 	getAllUnAssignedStudents,
 	getAllAssignedStudents,
+	getStudentsByInstructorId,
+	getAssignedStudents,
 } from '../controllers/studentController';
 
 const router = express.Router();
@@ -33,6 +35,11 @@ router.get(
 	editStdAssignToInstructor
 );
 router.get('/getStudentById/:id', verifyToken, getStudentById);
+router.get(
+	'/getStudentByInstructorId/:id',
+	verifyToken,
+	getStudentsByInstructorId
+);
 router.post(
 	'/updateStdAssignToInstructor/:id',
 	verifyToken,
@@ -43,6 +50,7 @@ router.get(
 	verifyToken,
 	getAllStdAssignToInstructor
 );
+router.get('/getAssignStudent', verifyToken, getAssignedStudents);
 router.delete(
 	'/deleteStdAssignToInstructor/:id',
 	verifyToken,

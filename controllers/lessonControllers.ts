@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import LessonModel, { LessonInterface } from '../models/lessonModel';
+import assignModel from '../models/assignModel';
+import StudentModel from '../models/studentModel';
 
 const getAllLessons = async (req: Request, res: Response) => {
 	try {
@@ -22,6 +24,17 @@ const getAllLessons = async (req: Request, res: Response) => {
 
 const createLesson = async (req: Request, res: Response) => {
 	try {
+		const { std_id, no_of_lesson_compeleted } = req.body;
+		const updateAssign: any = await assignModel
+			.findOne({ std_id })
+			.sort({ createdAt: -1, _id: -1 });
+		updateAssign.no_of_lesson_completed += no_of_lesson_compeleted;
+		if (updateAssign.no_of_lesson_completed === updateAssign.no_of_lesson) {
+			const student: any = await StudentModel.findById(std_id);
+			student.lesson_completed = 'completed';
+			student.save();
+		}
+		await updateAssign.save();
 		const lesson = await LessonModel.create(req.body);
 		res.status(201).json({
 			success: true,

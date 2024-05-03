@@ -3,6 +3,7 @@ import StudentPaymentModel, {
 	StudentPaymentInterface,
 } from '../models/studentPaymentModel';
 import StudentModel from '../models/studentModel';
+import mongoose from 'mongoose';
 
 const getAllPayments = async (req: Request, res: Response) => {
 	try {
@@ -108,6 +109,46 @@ const getPaymentById = async (req: Request, res: Response) => {
 		});
 	}
 };
+const getPaymentSumByStdId = async (req: Request, res: Response) => {
+	try {
+		const studentId = new mongoose.Types.ObjectId(req.params.id);
+
+		const result = await StudentPaymentModel.aggregate([
+			{
+				$match: { std_id: studentId },
+			},
+			{
+				$group: {
+					_id: '$std_id',
+					totalAmount: { $sum: '$amount' },
+				},
+			},
+		]);
+
+		if (!result || result.length === 0) {
+			return res.status(203).json({
+				success: false,
+				message: 'No payment records found for the student',
+				paidAmount: 0,
+			});
+		}
+
+		const { _id, totalAmount } = result[0];
+
+		res.status(200).json({
+			success: true,
+			message: 'Student payment sum retrieved successfully',
+
+			paidAmount: totalAmount,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
 
 const updatePayment = async (req: Request, res: Response) => {
 	try {
@@ -167,4 +208,5 @@ export {
 	getPaymentById,
 	updatePayment,
 	deletePayment,
+	getPaymentSumByStdId,
 };

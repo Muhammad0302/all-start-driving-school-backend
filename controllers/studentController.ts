@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import Student, { StudentInterface } from '../models/studentModel'; // Assuming the model file and interface are appropriately defined
 import StdAssignToInstructor from '../models/studentsAssignInstructorModel';
-import packageAssigToStudModel from '../models/packageAssigToStudModel';
+import packageAssigToStudModel from '../models/assignModel';
+import assignModel from '../models/assignModel';
+import mongoose from 'mongoose';
 const addStudent = async (req: Request, res: Response) => {
 	const {
 		instructor_id,
@@ -210,6 +212,96 @@ const getAllStudents = async (req: Request, res: Response) => {
 	} catch (error) {
 		console.error(error);
 		// If there was an internal server error, send a server error response
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+
+const getStudentsByInstructorId = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params; // Assuming instructorIds is an array of instructor ids passed in the request body
+
+		const assignedStudents = await assignModel
+			.find({
+				instructor_id: id,
+			})
+			.populate({
+				path: 'std_id',
+				model: 'Student',
+				select: '_id firstName lastName lesson_completed',
+				match: { lesson_completed: 'inprogress' },
+			})
+			.select('_id')
+			.exec();
+
+		const filteredStudents = assignedStudents.filter(
+			(student) => student.std_id
+		);
+
+		res.status(200).json({
+			success: true,
+			message: 'Assigned students fetched successfully',
+			assignedStudents: filteredStudents,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
+
+const getAssignedStudents = async (req: Request, res: Response) => {
+	try {
+		const assignedStudents = await assignModel.aggregate([
+			{
+				$sort: { updatedAt: 1 }, // Sort by updatedAt in descending order
+			},
+			{
+				$group: {
+					_id: '$std_id',
+					lastRecord: { $first: '$$ROOT' }, // Keep only the first (latest) record for each student
+				},
+			},
+			{
+				$lookup: {
+					from: 'students', // Name of the student collection
+					localField: '_id',
+					foreignField: '_id',
+					as: 'student',
+				},
+			},
+			{
+				$unwind: '$student',
+			},
+			{
+				$project: {
+					// _id: '$lastRecord._id',
+					// instructor_id: '$lastRecord.instructor_id',
+					// std_id: '$lastRecord.std_id',
+					// no_of_lesson: '$lastRecord.no_of_lesson',
+					// road_test: '$lastRecord.road_test',
+					// package_id: '$lastRecord.package_id',
+					// price_per_lesson: '$lastRecord.price_per_lesson',
+					// createdAt: '$lastRecord.createdAt',
+					// updatedAt: '$lastRecord.updatedAt',
+					// lesson_completed: '$student.lesson_completed',
+					'student._id': 1,
+					'student.firstName': 1,
+					'student.lastName': 1,
+				},
+			},
+		]);
+		res.status(200).json({
+			success: true,
+			message: 'Assigned students fetched successfully',
+			assignedStudents: assignedStudents,
+		});
+	} catch (error) {
+		console.error(error);
 		res.status(500).json({
 			success: false,
 			message: 'Internal server error',
@@ -456,4 +548,6 @@ export {
 	getStudentById,
 	getAllUnAssignedStudents,
 	getAllAssignedStudents,
+	getStudentsByInstructorId,
+	getAssignedStudents,
 };
