@@ -10,7 +10,9 @@ interface instructorPaymentInterface extends Document {
 	tax: string;
 	chaqueNo: string;
 	issueDate: Date;
-	compensation: number;
+	Dr: number;
+	Cr: number;
+	Balance: number;
 }
 
 const instructorPaymentSchema = new Schema<instructorPaymentInterface>(
@@ -33,15 +35,23 @@ const instructorPaymentSchema = new Schema<instructorPaymentInterface>(
 		},
 		chaqueNo: {
 			type: String,
-			required: true,
+			// required: true,
 		},
 		issueDate: {
 			type: Date,
 			required: true,
 		},
-		compensation: {
+		Dr: {
 			type: Number,
-			required: true,
+			default: 0,
+		},
+		Cr: {
+			type: Number,
+			default: 0,
+		},
+		Balance: {
+			type: Number,
+			// required: true,
 		},
 	},
 	{

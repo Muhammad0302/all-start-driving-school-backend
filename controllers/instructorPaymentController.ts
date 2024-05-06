@@ -39,7 +39,7 @@ const getAllInstructorPayments = async (req: Request, res: Response) => {
 					totalCompensation: {
 						$sum: {
 							$map: {
-								input: '$payments.compensation',
+								input: '$payments.Dr',
 								as: 'comp',
 								in: { $toDouble: '$$comp' },
 							},
@@ -64,7 +64,7 @@ const getAllInstructorPayments = async (req: Request, res: Response) => {
 
 const createInstructorPayment = async (req: Request, res: Response) => {
 	try {
-		const { noOfLessonToPay, instruct_id } = req.body;
+		const { noOfLessonToPay, instruct_id, Dr } = req.body;
 
 		// Find the instructor by ID
 		const instructor = await InstructorModel.findById(instruct_id);
@@ -78,13 +78,25 @@ const createInstructorPayment = async (req: Request, res: Response) => {
 
 		// Subtract the noOfLessonToPay from the instructor's noOfLesson
 		instructor.no_of_lesson -= noOfLessonToPay;
-
 		// Save the updated instructor data
 		await instructor.save();
-		const InstructorPayment = await InstructorPaymentModel.create(req.body);
+		// Fetch the last payment record for the instructor
+		const lastPayment = await InstructorPaymentModel.findOne({
+			instruct_id,
+		}).sort({ createdAt: -1 });
+
+		// Calculate the new balance
+		const newBalance = lastPayment ? lastPayment.Balance - Dr : Dr;
+
+		// Create the new instructor payment record with the calculated balance
+		const InstructorPayment = await InstructorPaymentModel.create({
+			...req.body,
+			Balance: newBalance,
+		});
+
 		res.status(201).json({
 			success: true,
-			message: 'Pay successfully',
+			message: 'Payment successful',
 			InstructorPayment: InstructorPayment,
 		});
 	} catch (error) {
@@ -134,7 +146,7 @@ const getPaymentByInstructorId = async (req: Request, res: Response) => {
 				{
 					$group: {
 						_id: null,
-						totalCompensation: { $sum: { $toDouble: '$compensation' } },
+						totalCompensation: { $sum: { $toDouble: '$Dr' } },
 					},
 				},
 			]),

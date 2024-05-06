@@ -3,7 +3,7 @@ import LessonModel, { LessonInterface } from '../models/lessonModel';
 import assignModel from '../models/assignModel';
 import StudentModel from '../models/studentModel';
 import InstructorModel from '../models/instructorModel';
-
+import InstructorPaymentModel from '../models/instructorPaymentModel';
 const getAllLessons = async (req: Request, res: Response) => {
 	try {
 		const lessons = await LessonModel.find()
@@ -25,7 +25,17 @@ const getAllLessons = async (req: Request, res: Response) => {
 
 const createLesson = async (req: Request, res: Response) => {
 	try {
-		const { std_id, instruct_id, no_of_lesson_compeleted } = req.body;
+		const {
+			std_id,
+			instruct_id,
+			no_of_lesson_compeleted,
+			Cr,
+			rate,
+			tax,
+			issueDate,
+			total_lesson,
+		} = req.body;
+
 		const updateAssign: any = await assignModel
 			.findOne({ std_id })
 			.sort({ createdAt: -1, _id: -1 });
@@ -39,7 +49,33 @@ const createLesson = async (req: Request, res: Response) => {
 		instructor.no_of_lesson += no_of_lesson_compeleted;
 		instructor.save();
 		await updateAssign.save();
-		const lesson = await LessonModel.create(req.body);
+
+		const lastPayment = await InstructorPaymentModel.findOne({
+			instruct_id,
+		}).sort({ createdAt: -1 });
+
+		// Calculate the new balance
+		const newBalance = lastPayment ? lastPayment.Balance + Cr : Cr;
+
+		const newCredit = {
+			instruct_id,
+			Cr,
+			rate,
+			tax,
+			issueDate,
+			noOfLessonToPay: no_of_lesson_compeleted,
+			Balance: newBalance,
+		};
+		await InstructorPaymentModel.create(newCredit);
+
+		const newLessonData = {
+			total_lesson,
+			std_id,
+			instruct_id,
+			no_of_lesson_compeleted,
+		};
+
+		const lesson = await LessonModel.create(newLessonData);
 		res.status(201).json({
 			success: true,
 			message: 'Lesson created successfully',
