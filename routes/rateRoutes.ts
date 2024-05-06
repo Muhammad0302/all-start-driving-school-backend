@@ -2,7 +2,11 @@ import express from 'express';
 import verifyToken from '../middleware/verifyToken';
 
 import {
-    getAllRates, createRate, getRateById, updateRate, deleteRate
+	getAllRates,
+	createRate,
+	getRateById,
+	updateRate,
+	deleteRate,
 } from '../controllers/rateController';
 
 const router = express.Router();
