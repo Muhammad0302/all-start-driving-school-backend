@@ -13,7 +13,7 @@ connectDb();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Apply CORS policy to all routes
+// Apply CORS policy to all routes here
 app.use(cors());
 
 app.use('/images', express.static(path.join(__dirname, 'upload/images')));
