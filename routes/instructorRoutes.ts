@@ -6,6 +6,7 @@ import {
 	deleteInstructor,
 	getAllInstructors,
 	getInstructorById,
+	getAllUnassignedInstructor,
 } from '../controllers/instructorController';
 
 const router = express.Router();
@@ -16,4 +17,9 @@ router.put('/updateinstructor/:id', verifyToken, updateInstructor);
 router.get('/getsingleinstructor/:id', verifyToken, getInstructorById);
 router.delete('/deleteinstructor/:id', verifyToken, deleteInstructor);
 router.get('/getallinstructors', verifyToken, getAllInstructors);
+router.get(
+	'/getAllUnassignedInstructor',
+	verifyToken,
+	getAllUnassignedInstructor
+);
 export default router;

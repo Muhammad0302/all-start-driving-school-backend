@@ -12,6 +12,10 @@ import {
 	getAllStdAssignToInstructor,
 	deleteStdAssignToInstructor,
 	getStudentById,
+	getAllUnAssignedStudents,
+	getAllAssignedStudents,
+	getStudentsByInstructorId,
+	getAssignedStudents,
 } from '../controllers/studentController';
 
 const router = express.Router();
@@ -21,6 +25,8 @@ router.post('/addStudent', verifyToken, addStudent);
 router.put('/updateStudent/:id', verifyToken, updateStudent);
 router.delete('/deleteStudent/:id', verifyToken, deleteStudent);
 router.get('/getAllStudents', verifyToken, getAllStudents);
+router.get('/getAllStudents', verifyToken, getAllStudents);
+router.get('/getAllAssignStudents', verifyToken, getAllAssignedStudents);
 
 router.post('/stdAssignToInstructor', verifyToken, stdAssignToInstructor);
 router.get(
@@ -29,6 +35,11 @@ router.get(
 	editStdAssignToInstructor
 );
 router.get('/getStudentById/:id', verifyToken, getStudentById);
+router.get(
+	'/getStudentByInstructorId/:id',
+	verifyToken,
+	getStudentsByInstructorId
+);
 router.post(
 	'/updateStdAssignToInstructor/:id',
 	verifyToken,
@@ -39,6 +50,7 @@ router.get(
 	verifyToken,
 	getAllStdAssignToInstructor
 );
+router.get('/getAssignStudent', verifyToken, getAssignedStudents);
 router.delete(
 	'/deleteStdAssignToInstructor/:id',
 	verifyToken,

@@ -5,6 +5,7 @@ interface StudentPaymentInterface extends Document {
 	std_id: mongoose.Types.ObjectId;
 	amount: number;
 	payment_method: String;
+	date: Date;
 }
 
 const studentPaymentSchema = new Schema<StudentPaymentInterface>(
@@ -13,18 +14,19 @@ const studentPaymentSchema = new Schema<StudentPaymentInterface>(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Student',
 		},
-	
+
 		amount: {
-            type: Number ,
-            required: true,
+			type: Number,
+			required: true,
 		},
-		
-        payment_method: {
-		type: String,
-		required: true,
+
+		payment_method: {
+			type: String,
+			required: true,
 		},
-	
-		
+		date: {
+			type: Date,
+		},
 	},
 	{
 		timestamps: true, // Automatically adds createdAt and updatedAt fields
@@ -32,9 +34,10 @@ const studentPaymentSchema = new Schema<StudentPaymentInterface>(
 );
 
 // Create the StudentPaymentModel
-const StudentPaymentModel: Model<StudentPaymentInterface> = mongoose.model<StudentPaymentInterface>(
-	'studentPayment',
-	studentPaymentSchema
-);
-export {StudentPaymentInterface};
+const StudentPaymentModel: Model<StudentPaymentInterface> =
+	mongoose.model<StudentPaymentInterface>(
+		'studentPayment',
+		studentPaymentSchema
+	);
+export { StudentPaymentInterface };
 export default StudentPaymentModel;
