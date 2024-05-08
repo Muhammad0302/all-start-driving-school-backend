@@ -111,69 +111,88 @@ const addStudent = async (req: Request, res: Response) => {
 };
 
 const updateStudent = async (req: Request, res: Response) => {
-	const studentId = req.params.id; // Assuming the student ID is passed as a URL parameter
-	const {
-		instructor_id,
-		supportive_id,
-		firstName,
-		lastName,
-		email,
-		address,
-		phone_number,
-		gender,
-		dob,
-		licence_no,
-		licence_issue_date,
-		licence_expiry_date,
-		course_start_date,
-	} = req.body;
+    const studentId = req.params.id; // Assuming the student ID is passed as a URL parameter
 
-	try {
-		// Find the student by ID and update its details
-		const result = await Student.findByIdAndUpdate(
-			studentId,
-			{
-				instructor_id,
-				supportive_id,
-				firstName,
-				lastName,
-				email,
-				address,
-				phone_number,
-				gender,
-				dob,
-				licence_no,
-				licence_issue_date,
-				licence_expiry_date,
-				course_start_date,
-			},
-			{ new: true }
-		); // Set { new: true } to return the updated student
+    // Extract fields from request body
+    const {
+        instructor_id,
+        supportive_id,
+        firstName,
+        lastName,
+        email,
+        address,
+        phone_number,
+        gender,
+        dob,
+        licence_no,
+        licence_issue_date,
+        licence_expiry_date,
+        course_start_date,
+        // Include other fields you want to update
+    } = req.body;
 
-		// Check if the student was found and updated successfully
-		if (result) {
-			// If the student was updated successfully, send success response
-			res.status(200).json({
-				success: true,
-				message: 'Student updated successfully',
-				student: result, // Send the updated student data in the response
-			});
-		} else {
-			// If the student was not found, send a not found response
-			res.status(404).json({
-				success: false,
-				message: 'Student not found',
-			});
-		}
-	} catch (error) {
-		console.error(error);
-		// If there was an internal server error, send a server error response
-		res.status(500).json({
-			success: false,
-			message: 'Internal server error',
-		});
-	}
+    try {
+        // Find the student by ID and update its details
+        const student = await Student.findByIdAndUpdate(
+            studentId,
+            {
+                instructor_id,
+                supportive_id,
+                firstName,
+                lastName,
+                email,
+                address,
+                phone_number,
+                gender,
+                dob,
+                licence_no,
+                licence_issue_date,
+                licence_expiry_date,
+                course_start_date,
+                // Include other fields you want to update
+            },
+            {
+                new: true,
+                runValidators: true // Run schema validators on the update data
+            }
+        );
+
+        // Check if the student was found and updated successfully
+        if (student) {
+            // Update lesson assignment using student ID
+            const assignLesson = await assignModel.findOneAndUpdate(
+                { std_id: studentId }, // Filter by student ID
+                req.body, // Update data from request body
+                {
+                    new: true, // Return the updated lesson assignment
+                    runValidators: true // Run schema validators on the update data
+                }
+            );
+
+            // Send success response with updated student and lesson assign data
+            res.status(200).json({
+                success: true,
+                message: 'Student and assign lesson  updated successfully',
+                student: student, // Updated student data
+                lesson: assignLesson // Updated lesson assignment data
+            });
+        } else {
+            // If the student was not found, send a not found response
+            res.status(404).json({
+                success: false,
+                message: 'Student not found'
+            });
+        }
+    } catch (error) {
+        // Handle any other errors that occur during the process
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error'
+        });
+    }
 };
+
 const deleteStudent = async (req: Request, res: Response) => {
 	const studentId = req.params.id; // Assuming the student ID is passed as a URL parameter
 
