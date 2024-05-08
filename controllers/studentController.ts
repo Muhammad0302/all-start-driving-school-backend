@@ -19,6 +19,9 @@ const addStudent = async (req: Request, res: Response) => {
 		licence_issue_date,
 		licence_expiry_date,
 		course_start_date,
+		no_of_lesson,
+		price_per_lesson,
+		road_test,
 	} = req.body;
 
 	try {
@@ -70,10 +73,21 @@ const addStudent = async (req: Request, res: Response) => {
 		});
 
 		// Save the new student to the database
-		const result = await newStudent.save();
+		const result: any = await newStudent.save();
+
 		// Check if the student was saved successfully
 		if (result) {
 			// If the student was saved successfully, send success response
+
+			const newAssign: any = new assignModel({
+				instructor_id,
+				std_id: result._id,
+				no_of_lesson,
+				price_per_lesson,
+				road_test,
+			});
+
+			const assign = await newAssign.save();
 			res.status(201).json({
 				success: true,
 				message: 'Student added successfully',
@@ -111,6 +125,9 @@ const updateStudent = async (req: Request, res: Response) => {
 		licence_issue_date,
 		licence_expiry_date,
 		course_start_date,
+		no_of_lesson,
+		price_per_lesson,
+		road_test,
 	} = req.body;
 
 	try {
@@ -134,6 +151,21 @@ const updateStudent = async (req: Request, res: Response) => {
 			},
 			{ new: true }
 		); // Set { new: true } to return the updated student
+
+		const response = await assignModel.findOneAndUpdate(
+			{ std_id: studentId }, // Find documents by studentId
+			{
+				instructor_id: instructor_id, // Update the instructor_id field
+				no_of_lesson: no_of_lesson, // Update the no_of_lesson field
+				price_per_lesson: price_per_lesson, // Update the price_per_lesson field
+				road_test: road_test, // Update the road_test field
+			},
+			{
+				sort: { createdAt: -1 }, // Sort documents by createdAt field in descending order
+				new: true, // Return the modified document after update
+			}
+		);
+		console.log('THe response of assign update is:', response);
 
 		// Check if the student was found and updated successfully
 		if (result) {
@@ -191,8 +223,12 @@ const deleteStudent = async (req: Request, res: Response) => {
 };
 const getAllStudents = async (req: Request, res: Response) => {
 	try {
-		// Retrieve all students from the database
-		const students = await Student.find();
+		// Retrieve all students from the database and populate their instructor and assignment data
+		const students = await assignModel
+			.find()
+			.populate('instructor_id') // Populate 'instructor_id' with the 'firstName' and 'lastName' fields from the 'Instructor' model
+			.populate('std_id') // Populate 'std_id' with the 'firstName', 'lastName', and 'email' fields from the 'Student' model
+			.exec();
 
 		// Check if there are students available
 		if (students.length > 0) {
@@ -509,7 +545,9 @@ const getStudentById = async (req: Request, res: Response) => {
 	try {
 		// Find the student by ID in the database
 		const student = await Student.findById(studentId);
-
+		const assign = await assignModel
+			.findOne({ std_id: studentId })
+			.sort({ createdAt: -1, _id: -1 });
 		// Check if the student was found
 		if (student) {
 			// If the student was found, send success response with student data
@@ -517,6 +555,7 @@ const getStudentById = async (req: Request, res: Response) => {
 				success: true,
 				message: 'Student found',
 				student: student,
+				assign: assign,
 			});
 		} else {
 			// If the student was not found, send a not found response

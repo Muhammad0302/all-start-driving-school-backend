@@ -45,9 +45,11 @@ const assignSchema = new Schema<assignInterface>(
 			// required: true,
 			default: null,
 		},
+		// This is actually total price of the lessons
 		price_per_lesson: {
 			type: Number,
 		},
+
 		// paymentPlan: {
 		// 	type: String,
 		// 	required: true,
