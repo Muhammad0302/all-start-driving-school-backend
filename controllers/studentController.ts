@@ -519,35 +519,39 @@ const deleteStdAssignToInstructor = async (req: Request, res: Response) => {
 };
 
 const getStudentById = async (req: Request, res: Response) => {
-	const studentId = req.params.id; // Assuming the student ID is passed as a URL parameter
+    const studentId = req.params.id; // Assuming the student ID is passed as a URL parameter
 
-	try {
-		// Find the student by ID in the database
-		const student = await Student.findById(studentId);
+    try {
+        // Find the student by ID in the database
+        const student = await Student.findById(studentId);
 
-		// Check if the student was found
-		if (student) {
-			// If the student was found, send success response with student data
-			res.status(200).json({
-				success: true,
-				message: 'Student found',
-				student: student,
-			});
-		} else {
-			// If the student was not found, send a not found response
-			res.status(404).json({
-				success: false,
-				message: 'Student not found',
-			});
-		}
-	} catch (error) {
-		// If there was an internal server error, send a server error response
-		console.error(error);
-		res.status(500).json({
-			success: false,
-			message: 'Internal server error',
-		});
-	}
+        // Check if the student was found
+        if (student) {
+            // Find the lesson assignment by student ID in the database
+            const assignLesson = await assignModel.findOne({ std_id: studentId });
+
+            // Respond with success and the student and lesson assignment details
+            res.status(200).json({
+                success: true,
+                message: 'Student and assign lesson found',
+                student: student,
+                assignLesson: assignLesson, // Include the lesson assignment in the response
+            });
+        } else {
+            // If the student was not found, send a not found response
+            res.status(404).json({
+                success: false,
+                message: 'Student not found',
+            });
+        }
+    } catch (error) {
+        // If there was an internal server error, send a server error response
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+        });
+    }
 };
 
 export {
