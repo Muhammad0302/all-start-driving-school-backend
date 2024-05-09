@@ -9,6 +9,7 @@ interface assignInterface extends Document {
 	package_id: mongoose.Types.ObjectId;
 	price_per_lesson: number;
 	no_of_lesson_completed: number;
+	isOld: boolean;
 	// paymentPlan: string;
 	// paymentType: string;
 	// advance: string;
@@ -48,6 +49,10 @@ const assignSchema = new Schema<assignInterface>(
 		// This is actually total price of the lessons
 		price_per_lesson: {
 			type: Number,
+		},
+		isOld: {
+			type: Boolean,
+			default: false,
 		},
 
 		// paymentPlan: {

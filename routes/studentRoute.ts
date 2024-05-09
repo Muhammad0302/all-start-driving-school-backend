@@ -23,7 +23,7 @@ const router = express.Router();
 //Room routes
 router.post('/addStudent', verifyToken, addStudent);
 router.put('/updateStudent/:id', verifyToken, updateStudent);
-router.delete('/deleteStudent/:id', verifyToken, deleteStudent);
+router.delete('/deleteStudent', verifyToken, deleteStudent);
 router.get('/getAllStudents', verifyToken, getAllStudents);
 router.get('/getAllStudents', verifyToken, getAllStudents);
 router.get('/getAllAssignStudents', verifyToken, getAllAssignedStudents);

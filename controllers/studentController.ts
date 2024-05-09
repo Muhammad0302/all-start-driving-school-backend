@@ -192,11 +192,15 @@ const updateStudent = async (req: Request, res: Response) => {
 	}
 };
 const deleteStudent = async (req: Request, res: Response) => {
-	const studentId = req.params.id; // Assuming the student ID is passed as a URL parameter
-
+	const { std_id, assign_id } = req.query;
 	try {
-		// Find the student by ID and delete it from the database
-		const result = await Student.findByIdAndDelete(studentId);
+		const count = await assignModel.countDocuments({
+			std_id: std_id,
+		});
+		const result = await assignModel.findByIdAndDelete(assign_id);
+		if (count < 2) {
+			await Student.findByIdAndDelete(std_id);
+		}
 
 		// Check if the student was found and deleted successfully
 		if (result) {
@@ -225,7 +229,7 @@ const getAllStudents = async (req: Request, res: Response) => {
 	try {
 		// Retrieve all students from the database and populate their instructor and assignment data
 		const students = await assignModel
-			.find()
+			.find({ isOld: false }) // Filter documents where isOld is false
 			.populate('instructor_id') // Populate 'instructor_id' with the 'firstName' and 'lastName' fields from the 'Instructor' model
 			.populate('std_id') // Populate 'std_id' with the 'firstName', 'lastName', and 'email' fields from the 'Student' model
 			.exec();
