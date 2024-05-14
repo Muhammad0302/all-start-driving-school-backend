@@ -6,9 +6,9 @@ interface LessonInterface extends Document {
 
 	// package_id: mongoose.Types.ObjectId;
 	std_id: mongoose.Types.ObjectId;
-	no_of_lesson_compeleted: string;
+	no_of_lesson_compeleted: number;
 	road_test_completion: string;
-	total_lesson: string;
+	total_lesson: number;
 }
 
 const lessonSchema = new Schema<LessonInterface>(
@@ -28,7 +28,7 @@ const lessonSchema = new Schema<LessonInterface>(
 			ref: 'Student',
 		},
 		no_of_lesson_compeleted: {
-			type: String,
+			type: Number,
 			required: true,
 		},
 		road_test_completion: {
@@ -36,7 +36,7 @@ const lessonSchema = new Schema<LessonInterface>(
 			// required: true,
 		},
 		total_lesson: {
-			type: String,
+			type: Number,
 			required: true,
 		},
 	},

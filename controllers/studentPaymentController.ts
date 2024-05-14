@@ -7,7 +7,41 @@ import mongoose from 'mongoose';
 
 const getAllPayments = async (req: Request, res: Response) => {
 	try {
-		const studentPayments = await StudentPaymentModel.find().populate('std_id');
+		// const studentPayments = await StudentPaymentModel.find().populate('std_id');
+		// res.status(200).json({
+		// 	success: true,
+		// 	message: 'Student payment retrieved successfully',
+		// 	studentPayments: studentPayments,
+		// });
+
+		const studentPayments = await StudentModel.aggregate([
+			{
+				$lookup: {
+					from: 'studentpayments',
+					localField: '_id',
+					foreignField: 'std_id',
+					as: 'payment',
+				},
+			},
+			{
+				$match: {
+					payment: { $ne: [] }, // Exclude documents where payment array is empty
+				},
+			},
+			{
+				$project: {
+					_id: 1,
+					supportive_id: 1,
+					firstName: 1,
+					lastName: 1,
+					phone_number: 1,
+					email: 1,
+					address: 1,
+					payment_id: { $arrayElemAt: ['$payment._id', 0] },
+					total_payment: { $sum: '$payment.amount' },
+				},
+			},
+		]);
 		res.status(200).json({
 			success: true,
 			message: 'Student payment retrieved successfully',
@@ -21,54 +55,6 @@ const getAllPayments = async (req: Request, res: Response) => {
 		});
 	}
 };
-
-// const getAllPayments = async (req: Request, res: Response) => {
-// 	try {
-// 		const studentPayments = await StudentModel.aggregate([
-// 			{
-// 				$lookup: {
-// 					from: 'studentPayments',
-// 					localField: '_id',
-// 					foreignField: 'std_id',
-// 					as: 'payments',
-// 				},
-// 			},
-// 			// {
-// 			// 	$match: {
-// 			// 		payments: { $ne: [] }, // Exclude documents where payments array is empty
-// 			// 	},
-// 			// },
-// 			{
-// 				$project: {
-// 					_id: 1,
-// 					firstName: 1,
-// 					supportive_id: 1,
-// 					lastName: 1,
-// 					phone_number: 1,
-// 					email: 1,
-// 					address: 1,
-// 					dob: 1,
-// 					gender: 1,
-// 					totalpayment: {
-// 						$sum: '$payments.amount', // Directly sum the payment amounts
-// 					},
-// 				},
-// 			},
-// 		]);
-
-// 		res.status(200).json({
-// 			success: true,
-// 			message: 'Student payments retrieved successfully',
-// 			studentPayments: studentPayments,
-// 		});
-// 	} catch (error) {
-// 		console.error(error);
-// 		res.status(500).json({
-// 			success: false,
-// 			message: 'Internal server error',
-// 		});
-// 	}
-// };
 
 const createPayment = async (req: Request, res: Response) => {
 	try {
@@ -89,7 +75,9 @@ const createPayment = async (req: Request, res: Response) => {
 
 const getPaymentById = async (req: Request, res: Response) => {
 	try {
-		const studentPayment = await StudentPaymentModel.findById(req.params.id);
+		const studentPayment = await StudentPaymentModel.find({
+			std_id: req.params.id,
+		});
 		if (!studentPayment) {
 			return res.status(404).json({
 				success: false,
