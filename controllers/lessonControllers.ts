@@ -164,7 +164,9 @@ const createLesson = async (req: Request, res: Response) => {
 
 const getLessonById = async (req: Request, res: Response) => {
 	try {
-		const lesson = await LessonModel.findById(req.params.id);
+		const lesson = await LessonModel.find({ std_id: req.params.id })
+			.populate('std_id')
+			.populate('instruct_id');
 		if (!lesson) {
 			return res.status(404).json({
 				success: false,
