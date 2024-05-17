@@ -9,6 +9,7 @@ interface instructorPaymentInterface extends Document {
 	noOfLessonToPay: number;
 	tax: string;
 	chaqueNo: string;
+	commission: number;
 	issueDate: Date;
 	Dr: number;
 	Cr: number;
@@ -32,6 +33,10 @@ const instructorPaymentSchema = new Schema<instructorPaymentInterface>(
 		tax: {
 			type: String,
 			required: true,
+		},
+		commission: {
+			type: Number,
+			default: 0,
 		},
 		chaqueNo: {
 			type: String,
