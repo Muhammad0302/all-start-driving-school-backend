@@ -52,7 +52,7 @@ const addStudent = async (req: Request, res: Response) => {
 		// Get the last two digits of the current year
 		const lastTwoDigitsOfYear = new Date().getFullYear() % 100;
 
-		const newSupportiveId = `${supportiveIdPrefix}/${lastTwoDigitsOfYear}/${
+		const newSupportiveId = `${supportiveIdPrefix}${lastTwoDigitsOfYear}/${
 			new Date().getMonth() + 1
 		}/${nextCounter}`;
 
