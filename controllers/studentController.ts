@@ -29,20 +29,25 @@ const addStudent = async (req: Request, res: Response) => {
 
 		// Fetch the last registered student
 		const lastStudent = await Student.findOne().sort({ createdAt: -1 });
-
+		console.log('The last student that have registered is:', lastStudent);
 		// Extract the counter from the last registered student's supportive ID
 		const lastCounter = lastStudent
 			? Number(lastStudent.supportive_id.split('/').pop())
 			: 1;
-
+		console.log('The last counter is:', lastCounter);
 		// Extract the month from the last registered student's supportive ID
 		const lastStudentSupportiveIdMonth = lastStudent
-			? Number(lastStudent.supportive_id.split('/')[2])
+			? Number(lastStudent.supportive_id.split('/')[1])
 			: null;
-
+		console.log(
+			'The is current month and coming month is:',
+			lastStudentSupportiveIdMonth,
+			new Date().getMonth() + 1
+		);
 		// Determine if the last registered student's supportive ID month is different from the current date's month
 		const isDifferentMonth =
 			lastStudentSupportiveIdMonth !== new Date().getMonth() + 1;
+		console.log('The is different month is:', isDifferentMonth);
 
 		// Determine the next counter value based on the condition
 		const nextCounter = isDifferentMonth ? 1 : lastCounter + 1;
@@ -277,7 +282,7 @@ const getStudentsByInstructorId = async (req: Request, res: Response) => {
 			.exec();
 
 		const filteredStudents = assignedStudents.filter(
-			(student) => student.std_id
+			(student: any) => student.std_id
 		);
 
 		res.status(200).json({
@@ -404,7 +409,7 @@ const getAllAssignedStudents = async (req: Request, res: Response) => {
 		]);
 
 		// Extract the std_id values from the aggregation result
-		const stdIds = aggregateResult.map((result) => result.std_id);
+		const stdIds = aggregateResult.map((result: any) => result.std_id);
 
 		// Use find query to populate std_id field
 		const assignedStudents = await Student.find({ _id: { $in: stdIds } });
