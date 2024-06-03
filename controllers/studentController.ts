@@ -28,7 +28,10 @@ const addStudent = async (req: Request, res: Response) => {
 		const supportiveIdPrefix = supportive_id === 'Online' ? 'I' : 'E';
 
 		// Fetch the last registered student
-		const lastStudent = await Student.findOne().sort({ createdAt: -1 });
+		const lastStudent = await Student.findOne().sort({
+			createdAt: -1,
+			_id: -1,
+		});
 		console.log('The last student that have registered is:', lastStudent);
 		// Extract the counter from the last registered student's supportive ID
 		const lastCounter = lastStudent
