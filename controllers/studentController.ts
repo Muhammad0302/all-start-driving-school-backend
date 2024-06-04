@@ -26,88 +26,182 @@ const addStudent = async (req: Request, res: Response) => {
 
 	try {
 		const supportiveIdPrefix = supportive_id === 'Online' ? 'I' : 'E';
+		const isExist = await Student.find({ email });
 
-		// Fetch the last registered student
-		const lastStudent = await Student.findOne().sort({
-			createdAt: -1,
-			_id: -1,
-		});
-		console.log('The last student that have registered is:', lastStudent);
-		// Extract the counter from the last registered student's supportive ID
-		const lastCounter = lastStudent
-			? Number(lastStudent.supportive_id.split('/').pop())
-			: 1;
-		console.log('The last counter is:', lastCounter);
-		// Extract the month from the last registered student's supportive ID
-		const lastStudentSupportiveIdMonth = lastStudent
-			? Number(lastStudent.supportive_id.split('/')[1])
-			: null;
-		console.log(
-			'The is current month and coming month is:',
-			lastStudentSupportiveIdMonth,
-			new Date().getMonth() + 1
-		);
-		// Determine if the last registered student's supportive ID month is different from the current date's month
-		const isDifferentMonth =
-			lastStudentSupportiveIdMonth !== new Date().getMonth() + 1;
-		console.log('The is different month is:', isDifferentMonth);
-
-		// Determine the next counter value based on the condition
-		const nextCounter = isDifferentMonth ? 1 : lastCounter + 1;
-		// Determine the next counter value
-		// const nextCounter = lastCounter + 1;
-
-		// Get the last two digits of the current year
-		const lastTwoDigitsOfYear = new Date().getFullYear() % 100;
-
-		const newSupportiveId = `${supportiveIdPrefix}${lastTwoDigitsOfYear}/${
-			new Date().getMonth() + 1
-		}/${nextCounter}`;
-
-		const newStudent: StudentInterface = new Student({
-			instructor_id,
-			supportive_id: newSupportiveId,
-			firstName,
-			lastName,
-			email,
-			address,
-			phone_number,
-			gender,
-			dob,
-			licence_no,
-			licence_issue_date,
-			licence_expiry_date,
-			course_start_date,
-		});
-
-		// Save the new student to the database
-		const result: any = await newStudent.save();
-
-		// Check if the student was saved successfully
-		if (result) {
-			// If the student was saved successfully, send success response
-
-			const newAssign: any = new assignModel({
-				instructor_id,
-				std_id: result._id,
-				no_of_lesson,
-				price_per_lesson,
-				road_test,
-			});
-
-			const assign = await newAssign.save();
-			res.status(201).json({
+		if (isExist.length > 0) {
+			res.status(500).json({
 				success: true,
-				message: 'Student added successfully',
-				student: result, // Send the added student data in the response
+				message: 'User already exist with the same email',
 			});
 		} else {
-			// If there was an issue saving the student, send a server error response
-			res.status(500).json({
-				success: false,
-				message: 'Failed to add student',
+			// Fetch the last registered student
+			const lastStudent = await Student.find({ isNew: true });
+			// console.log('The last student that have registered is:', lastStudent);
+
+			// Extract the counter from the last registered student's supportive ID
+			const lastCounter = lastStudent[0]
+				? Number(lastStudent[0].supportive_id.split('/').pop())
+				: 1;
+			// console.log('The last counter is:', lastCounter);
+			// Extract the month from the last registered student's supportive ID
+			const lastStudentSupportiveIdMonth = lastStudent[0]
+				? Number(lastStudent[0].supportive_id.split('/')[1])
+				: null;
+			// console.log(
+			// 	'The is current month and coming month is:',
+			// 	lastStudentSupportiveIdMonth,
+			// 	new Date().getMonth() + 1
+			// );
+			// Determine if the last registered student's supportive ID month is different from the current date's month
+			const isDifferentMonth =
+				lastStudentSupportiveIdMonth !== new Date().getMonth() + 1;
+			// console.log('The is different month is:', isDifferentMonth);
+
+			// Determine the next counter value based on the condition
+			const nextCounter = isDifferentMonth ? 1 : lastCounter + 1;
+			// Determine the next counter value
+			// const nextCounter = lastCounter + 1;
+
+			// Get the last two digits of the current year
+			const lastTwoDigitsOfYear = new Date().getFullYear() % 100;
+
+			const newSupportiveId = `${supportiveIdPrefix}${lastTwoDigitsOfYear}/${
+				new Date().getMonth() + 1
+			}/${nextCounter}`;
+			if (lastStudent[0]) {
+				lastStudent[0].isNew = false;
+				await lastStudent[0].save();
+			}
+			const newStudent: StudentInterface = new Student({
+				instructor_id,
+				supportive_id: newSupportiveId,
+				firstName,
+				lastName,
+				email,
+				address,
+				phone_number,
+				gender,
+				dob,
+				licence_no,
+				licence_issue_date,
+				licence_expiry_date,
+				course_start_date,
 			});
+
+			// Save the new student to the database
+			const result: any = await newStudent.save();
+
+			// Check if the student was saved successfully
+			if (result) {
+				// If the student was saved successfully, send success response
+
+				const newAssign: any = new assignModel({
+					instructor_id,
+					std_id: result._id,
+					no_of_lesson,
+					price_per_lesson,
+					road_test,
+				});
+
+				const assign = await newAssign.save();
+				res.status(201).json({
+					success: true,
+					message: 'Student added successfully',
+					student: result, // Send the added student data in the response
+				});
+			} else {
+				// If there was an issue saving the student, send a server error response
+				res.status(500).json({
+					success: false,
+					message: 'Failed to add student',
+				});
+			}
 		}
+
+		// Code for fetching last records
+
+		// Fetch the last registered student
+		// const lastStudent = await Student.find().sort({ createdAt: -1,_id:-1 }).exec();
+		// console.log('The last student that have registered is:', lastStudent);
+		// res.status(201).json({
+		// 	success: true,
+		// 	message: 'Student added successfully',
+		// });
+		// Extract the counter from the last registered student's supportive ID
+		// const lastCounter = lastStudent
+		// 	? Number(lastStudent.supportive_id.split('/').pop())
+		// 	: 1;
+		// console.log('The last counter is:', lastCounter);
+		// // Extract the month from the last registered student's supportive ID
+		// const lastStudentSupportiveIdMonth = lastStudent
+		// ? Number(lastStudent.supportive_id.split('/')[1])
+		// 	: null;
+		// console.log(
+		// 	'The is current month and coming month is:',
+		// 	lastStudentSupportiveIdMonth,
+		// 	new Date().getMonth() + 1
+		// );
+		// // Determine if the last registered student's supportive ID month is different from the current date's month
+		// const isDifferentMonth =
+		// 	lastStudentSupportiveIdMonth !== new Date().getMonth() + 1;
+		// console.log('The is different month is:', isDifferentMonth);
+
+		// // Determine the next counter value based on the condition
+		// const nextCounter = isDifferentMonth ? 1 : lastCounter + 1;
+		// // Determine the next counter value
+		// // const nextCounter = lastCounter + 1;
+
+		// // Get the last two digits of the current year
+		// const lastTwoDigitsOfYear = new Date().getFullYear() % 100;
+
+		// const newSupportiveId = `${supportiveIdPrefix}${lastTwoDigitsOfYear}/${
+		// 	new Date().getMonth() + 1
+		// }/${nextCounter}`;
+
+		// const newStudent: StudentInterface = new Student({
+		// 	instructor_id,
+		// 	supportive_id: newSupportiveId,
+		// 	firstName,
+		// 	lastName,
+		// 	email,
+		// 	address,
+		// 	phone_number,
+		// 	gender,
+		// 	dob,
+		// 	licence_no,
+		// 	licence_issue_date,
+		// 	licence_expiry_date,
+		// 	course_start_date,
+		// });
+
+		// // Save the new student to the database
+		// const result: any = await newStudent.save();
+
+		// // Check if the student was saved successfully
+		// if (result) {
+		// 	// If the student was saved successfully, send success response
+
+		// 	const newAssign: any = new assignModel({
+		// 		instructor_id,
+		// 		std_id: result._id,
+		// 		no_of_lesson,
+		// 		price_per_lesson,
+		// 		road_test,
+		// 	});
+
+		// 	const assign = await newAssign.save();
+		// 	res.status(201).json({
+		// 		success: true,
+		// 		message: 'Student added successfully',
+		// 		student: result, // Send the added student data in the response
+		// 	});
+		// } else {
+		// 	// If there was an issue saving the student, send a server error response
+		// 	res.status(500).json({
+		// 		success: false,
+		// 		message: 'Failed to add student',
+		// 	});
+		// }
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({

@@ -12,6 +12,7 @@ interface StudentInterface {
 	gender: string;
 	dob: string;
 	licence_no: string;
+	isNew: Boolean;
 	lesson_completed: string;
 	fee: string;
 	// mto_certification: 'yes' | 'no';
@@ -66,6 +67,11 @@ const studentSchema = new Schema<StudentInterface>(
 			type: String,
 			required: true,
 		},
+		isNew: {
+			type: Boolean,
+			default: true,
+		},
+
 		lesson_completed: {
 			type: String,
 			default: 'inprogress',
