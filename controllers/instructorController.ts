@@ -178,7 +178,7 @@ const deleteInstructor = async (req: Request, res: Response) => {
 const getAllInstructors = async (req: Request, res: Response) => {
 	try {
 		// Retrieve all instructors from the database
-		const instructors = await Instructor.find();
+		const instructors = await Instructor.find().sort({ createdAt: -1 });
 
 		// Check if there are instructors available
 		if (instructors.length > 0) {

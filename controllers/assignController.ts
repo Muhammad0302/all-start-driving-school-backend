@@ -308,10 +308,7 @@ const getInstructorsByStudent = async (req: Request, res: Response) => {
 				no_of_lesson: 1,
 			});
 
-		const student = await StudentModel.findById(StudentId, {
-			firstName: 1,
-			lastName: 1,
-		});
+		const student = await StudentModel.findById(StudentId);
 
 		res.status(200).json({
 			success: true,

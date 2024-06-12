@@ -25,7 +25,7 @@ const addStudent = async (req: Request, res: Response) => {
 	} = req.body;
 
 	try {
-		const supportiveIdPrefix = supportive_id === 'Online' ? 'I' : 'E';
+		const supportiveIdPrefix = supportive_id === 'Online' ? 'E' : 'I';
 		const isExist = await Student.find({ email });
 
 		if (isExist.length > 0) {
@@ -334,6 +334,7 @@ const getAllStudents = async (req: Request, res: Response) => {
 			.find({ isOld: false }) // Filter documents where isOld is false
 			.populate('instructor_id') // Populate 'instructor_id' with the 'firstName' and 'lastName' fields from the 'Instructor' model
 			.populate('std_id') // Populate 'std_id' with the 'firstName', 'lastName', and 'email' fields from the 'Student' model
+			.sort({ createdAt: -1 })
 			.exec();
 
 		// Check if there are students available
