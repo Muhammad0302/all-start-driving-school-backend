@@ -246,12 +246,13 @@ const getStudentsByInstructor = async (req: Request, res: Response) => {
 					// paymentPlan: 0,
 					// paymentType: 0,
 					// advance: 0,
-					createdAt: 1,
-					updatedAt: 1,
+					// createdAt: 1,
+					// updatedAt: 1,
 					// remainingAmount: 0,
 					// instructor_id: 0,
 				}
 			)
+			.populate('instructor_id')
 			.populate('std_id')
 			.populate('package_id', {
 				no_of_lesson: 1,
@@ -283,7 +284,7 @@ const getInstructorsByStudent = async (req: Request, res: Response) => {
 		if (!StudentId) {
 			return res.status(400).json({
 				success: false,
-				message: 'Instructor ID is required',
+				message: 'Student ID is required',
 			});
 		}
 
@@ -291,7 +292,7 @@ const getInstructorsByStudent = async (req: Request, res: Response) => {
 			.find(
 				{ std_id: StudentId },
 				{
-					_id: 1,
+					// _id: 1,
 					// __v: 0,
 					// package_id: 0,
 					// paymentPlan: 0,
@@ -304,9 +305,10 @@ const getInstructorsByStudent = async (req: Request, res: Response) => {
 				}
 			)
 			.populate('instructor_id')
-			.populate('package_id', {
-				no_of_lesson: 1,
-			});
+			.populate('std_id');
+		// .populate('package_id', {
+		// 	no_of_lesson: 1,
+		// });
 
 		const student = await StudentModel.findById(StudentId);
 
