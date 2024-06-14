@@ -10,6 +10,7 @@ interface assignInterface extends Document {
 	price_per_lesson: number;
 	no_of_lesson_completed: number;
 	isOld: boolean;
+	isDeleted: boolean;
 	// paymentPlan: string;
 	// paymentType: string;
 	// advance: string;
@@ -49,6 +50,10 @@ const assignSchema = new Schema<assignInterface>(
 		// This is actually total price of the lessons
 		price_per_lesson: {
 			type: Number,
+		},
+		isDeleted: {
+			type: Boolean,
+			default: false,
 		},
 		isOld: {
 			type: Boolean,
