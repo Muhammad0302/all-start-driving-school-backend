@@ -13,6 +13,7 @@ interface InstructorInterface {
 	driver_licence_number: string;
 	DI_number: string;
 	no_of_lesson: number;
+	isDeleted: Boolean;
 }
 
 const instructorSchema = new Schema<InstructorInterface>(
@@ -65,6 +66,10 @@ const instructorSchema = new Schema<InstructorInterface>(
 			type: String,
 			required: true,
 			// unique: true,
+		},
+		isDeleted: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	{

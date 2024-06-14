@@ -150,7 +150,12 @@ const deleteInstructor = async (req: Request, res: Response) => {
 
 	try {
 		// Find the instructor by ID and delete it from the database
-		const result = await Instructor.findByIdAndDelete(instructorId);
+		// const result = await Instructor.findByIdAndDelete(instructorId);
+		const result = await Instructor.findByIdAndUpdate(
+			instructorId,
+			{ $set: { isDeleted: true } },
+			{ new: true }
+		);
 
 		// Check if the instructor was found and deleted successfully
 		if (result) {
@@ -178,7 +183,9 @@ const deleteInstructor = async (req: Request, res: Response) => {
 const getAllInstructors = async (req: Request, res: Response) => {
 	try {
 		// Retrieve all instructors from the database
-		const instructors = await Instructor.find().sort({ createdAt: -1 });
+		const instructors = await Instructor.find({ isDeleted: false }).sort({
+			createdAt: -1,
+		});
 
 		// Check if there are instructors available
 		if (instructors.length > 0) {
