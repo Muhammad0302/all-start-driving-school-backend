@@ -22,6 +22,11 @@ const getAllInstructorPayments = async (req: Request, res: Response) => {
 				},
 			},
 			{
+				$sort: {
+					'payments.createdAt': -1, // Sort by createdAt in descending order
+				},
+			},
+			{
 				$project: {
 					_id: 1,
 					firstName: 1,

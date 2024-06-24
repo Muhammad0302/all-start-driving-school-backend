@@ -29,6 +29,11 @@ const getAllPayments = async (req: Request, res: Response) => {
 				},
 			},
 			{
+				$sort: {
+					'payment.createdAt': -1, // Sort by createdAt in descending order
+				},
+			},
+			{
 				$project: {
 					_id: 1,
 					supportive_id: 1,

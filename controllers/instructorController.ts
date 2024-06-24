@@ -225,7 +225,9 @@ const getAllSoftInstructors = async (req: Request, res: Response) => {
 const getAllInstructors = async (req: Request, res: Response) => {
 	try {
 		// Retrieve instructors from the database based on the query
-		const instructors = await Instructor.find().sort({ createdAt: -1 });
+		const instructors = await Instructor.find({ isDeleted: false }).sort({
+			createdAt: -1,
+		});
 
 		// Check if there are instructors available
 		if (instructors.length > 0) {

@@ -111,6 +111,11 @@ const getAllLessons = async (req: Request, res: Response) => {
 				},
 			},
 			{
+				$sort: {
+					'lessons.createdAt': -1, // Sort by createdAt in descending order
+				},
+			},
+			{
 				$project: {
 					_id: 1,
 					supportive_id: 1,
