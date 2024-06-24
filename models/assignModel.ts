@@ -40,6 +40,7 @@ const assignSchema = new Schema<assignInterface>(
 		road_test: {
 			type: String,
 			// required: true,
+			// default: 'no',
 		},
 		package_id: {
 			type: mongoose.Schema.Types.ObjectId,

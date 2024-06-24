@@ -299,9 +299,26 @@ const deleteStudent = async (req: Request, res: Response) => {
 		const count = await assignModel.countDocuments({
 			std_id: std_id,
 		});
-		const result = await assignModel.findByIdAndDelete(assign_id);
+
+		// hot deletion
+		// const result = await assignModel.findByIdAndDelete(assign_id);
+
+		// soft deletion
+		const result = await assignModel.findByIdAndUpdate(
+			assign_id,
+			{ $set: { isDeleted: true } },
+			{ new: true }
+		);
 		if (count < 2) {
-			await Student.findByIdAndDelete(std_id);
+			// hot deletion
+			// await Student.findByIdAndDelete(std_id);
+
+			// soft deletion
+			const result = await Student.findByIdAndUpdate(
+				std_id,
+				{ $set: { isDeleted: true } },
+				{ new: true }
+			);
 		}
 
 		// Check if the student was found and deleted successfully
@@ -362,6 +379,53 @@ const getAllStudents = async (req: Request, res: Response) => {
 	}
 };
 
+const getAllSoftStudents = async (req: Request, res: Response) => {
+	try {
+		// Get the isDeleted parameter from the query string
+		const { isDeleted } = req.query;
+
+		// Initialize the query object
+		let query = {};
+
+		// Modify the query based on the isDeleted parameter
+		if (isDeleted !== undefined && isDeleted !== 'NA') {
+			// @ts-ignore
+			query.isDeleted = isDeleted;
+		}
+
+		// Retrieve all students from the database and populate their instructor and assignment data
+		const students = await assignModel
+			// .find({ isOld: false }) // Filter documents where isOld is false
+			.find(query)
+			.populate('instructor_id') // Populate 'instructor_id' with the 'firstName' and 'lastName' fields from the 'Instructor' model
+			.populate('std_id') // Populate 'std_id' with the 'firstName', 'lastName', and 'email' fields from the 'Student' model
+			.sort({ createdAt: -1 })
+			.exec();
+
+		// Check if there are students available
+		if (students.length > 0) {
+			// If there are students available, send success response with student data
+			res.status(200).json({
+				success: true,
+				message: 'Students retrieved successfully',
+				students: students,
+			});
+		} else {
+			// If no students are found, send a not found response
+			res.status(404).json({
+				success: false,
+				message: 'No students found',
+			});
+		}
+	} catch (error) {
+		console.error(error);
+		// If there was an internal server error, send a server error response
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
 const getStudentsByInstructorId = async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params; // Assuming instructorIds is an array of instructor ids passed in the request body
@@ -369,6 +433,7 @@ const getStudentsByInstructorId = async (req: Request, res: Response) => {
 		const assignedStudents = await assignModel
 			.find({
 				instructor_id: id,
+				isDeleted: false,
 			})
 			.populate({
 				path: 'std_id',
@@ -696,4 +761,5 @@ export {
 	getAllAssignedStudents,
 	getStudentsByInstructorId,
 	getAssignedStudents,
+	getAllSoftStudents,
 };

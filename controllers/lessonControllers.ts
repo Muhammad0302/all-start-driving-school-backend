@@ -46,6 +46,53 @@ import InstructorPaymentModel from '../models/instructorPaymentModel';
 // 	}
 // };
 
+// const getAllLessons = async (req: Request, res: Response) => {
+// 	try {
+// 		// Perform aggregation query
+// 		const lessons = await StudentModel.aggregate([
+// 			{
+// 				$lookup: {
+// 					from: 'lessons',
+// 					localField: '_id',
+// 					foreignField: 'std_id',
+// 					as: 'lessons',
+// 				},
+// 			},
+// 			{
+// 				$match: {
+// 					lessons: { $ne: [] }, // Exclude documents where payments array is empty
+// 				},
+// 			},
+// 			{
+// 				$project: {
+// 					_id: 1,
+// 					supportive_id: 1,
+// 					firstName: 1,
+// 					lastName: 1,
+// 					phone_number: 1,
+// 					email: 1,
+// 					address: 1,
+// 					dob: 1,
+// 					gender: 1,
+// 					lesson_id: { $arrayElemAt: ['$lessons._id', 0] },
+// 					total_lesson: { $arrayElemAt: ['$lessons.total_lesson', 0] },
+// 					total_lesson_completed: { $sum: '$lessons.no_of_lesson_compeleted' },
+// 				},
+// 			},
+// 		]);
+// 		res.status(200).json({
+// 			success: true,
+// 			message: 'Lessons retrieved successfully',
+// 			lessons: lessons,
+// 		});
+// 	} catch (error) {
+// 		console.error(error);
+// 		res.status(500).json({
+// 			success: false,
+// 			message: 'Internal server error',
+// 		});
+// 	}
+// };
 const getAllLessons = async (req: Request, res: Response) => {
 	try {
 		// Perform aggregation query
@@ -60,7 +107,7 @@ const getAllLessons = async (req: Request, res: Response) => {
 			},
 			{
 				$match: {
-					lessons: { $ne: [] }, // Exclude documents where payments array is empty
+					lessons: { $ne: [] }, // Exclude documents where lessons array is empty
 				},
 			},
 			{
@@ -77,6 +124,8 @@ const getAllLessons = async (req: Request, res: Response) => {
 					lesson_id: { $arrayElemAt: ['$lessons._id', 0] },
 					total_lesson: { $arrayElemAt: ['$lessons.total_lesson', 0] },
 					total_lesson_completed: { $sum: '$lessons.no_of_lesson_compeleted' },
+					instructor_id: { $arrayElemAt: ['$lessons.instruct_id', 0] },
+					student_id: { $arrayElemAt: ['$lessons.std_id', 0] }, // Adding the student_id field
 				},
 			},
 		]);
@@ -105,13 +154,15 @@ const createLesson = async (req: Request, res: Response) => {
 			tax,
 			issueDate,
 			total_lesson,
+			road_test_completion,
 		} = req.body;
 
 		const updateAssign: any = await assignModel
 			.findOne({ std_id })
 			.sort({ createdAt: -1, _id: -1 });
 		updateAssign.no_of_lesson_completed += no_of_lesson_compeleted;
-		updateAssign.no_of_lesson -= no_of_lesson_compeleted;
+		// updateAssign.no_of_lesson -= no_of_lesson_compeleted;
+		// updateAssign.road_test = road_test_completion;
 		if (updateAssign.no_of_lesson_completed === updateAssign.no_of_lesson) {
 			const student: any = await StudentModel.findById(std_id);
 			student.lesson_completed = 'completed';
@@ -145,6 +196,7 @@ const createLesson = async (req: Request, res: Response) => {
 			std_id,
 			instruct_id,
 			no_of_lesson_compeleted,
+			road_test_completion,
 		};
 
 		const lesson = await LessonModel.create(newLessonData);
