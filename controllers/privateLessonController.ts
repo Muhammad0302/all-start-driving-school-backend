@@ -5,9 +5,9 @@ import PrivateLessonModel, {
 
 const getAllPrivateLessons = async (req: Request, res: Response) => {
 	try {
-		const privateLessons = await PrivateLessonModel.find().populate(
-			'instructor_id'
-		);
+		const privateLessons = await PrivateLessonModel.find()
+			.populate('instructor_id')
+			.sort({ createdAt: -1 });
 		res.status(200).json({
 			success: true,
 			message: ' Private lessons retrieved successfully',
