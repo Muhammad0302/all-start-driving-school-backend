@@ -382,7 +382,7 @@ const getAllStudents = async (req: Request, res: Response) => {
 const getAllSoftStudents = async (req: Request, res: Response) => {
 	try {
 		// Get the isDeleted parameter from the query string
-		const { isDeleted } = req.query;
+		const { isDeleted, isOld } = req.query;
 
 		// Initialize the query object
 		let query = {};
@@ -391,6 +391,10 @@ const getAllSoftStudents = async (req: Request, res: Response) => {
 		if (isDeleted !== undefined && isDeleted !== 'NA') {
 			// @ts-ignore
 			query.isDeleted = isDeleted;
+		}
+		if (isOld !== undefined && isOld !== 'NA') {
+			// @ts-ignore
+			query.isOld = isOld === 'true';
 		}
 
 		// Retrieve all students from the database and populate their instructor and assignment data

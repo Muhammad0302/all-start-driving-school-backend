@@ -358,7 +358,12 @@ const changeInstructor = async (req: Request, res: Response) => {
 
 		// Find the record to be updated
 		const existingRecord = await assignModel.findById(id);
-		await assignModel.findByIdAndUpdate(id, { isOld: true }, { new: true });
+		await assignModel.findByIdAndUpdate(
+			id,
+			{ isOld: true, endDate: new Date() },
+			{ new: true }
+		);
+
 		// Check if the record exists
 		if (!existingRecord) {
 			return res.status(404).json({

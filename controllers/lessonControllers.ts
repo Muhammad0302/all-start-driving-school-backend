@@ -165,6 +165,19 @@ const createLesson = async (req: Request, res: Response) => {
 		const updateAssign: any = await assignModel
 			.findOne({ std_id })
 			.sort({ createdAt: -1, _id: -1 });
+
+		const lessonCompleted =
+			updateAssign.no_of_lesson_completed + no_of_lesson_compeleted;
+		console.log(
+			'The lesson completed and no of lesson is:',
+			lessonCompleted,
+			updateAssign.no_of_lesson
+		);
+		if (lessonCompleted >= updateAssign.no_of_lesson) {
+			updateAssign.endDate = new Date();
+			await updateAssign.save();
+		}
+
 		updateAssign.no_of_lesson_completed += no_of_lesson_compeleted;
 		// updateAssign.no_of_lesson -= no_of_lesson_compeleted;
 		// updateAssign.road_test = road_test_completion;
