@@ -17,36 +17,52 @@ const addInstructor = async (req: Request, res: Response) => {
 	} = req.body;
 
 	try {
-		const newInstructor: InstructorInterface = new Instructor({
-			firstName,
-			lastName,
-			// hiringOn,
-			phone_number,
-			email,
-			hired_as,
-			address,
-			dob,
-			gender,
-			driver_licence_number,
-			DI_number,
+		const isExist = await Instructor.find({ email });
+		const isExistLicence = await Instructor.find({
+			driver_licence_number: driver_licence_number,
 		});
-
-		// Save the new instructor to the database
-		const result = await newInstructor.save();
-		// Check if the instructor was saved successfully
-		if (result) {
-			// If the instructor was saved successfully, send success response
-			res.status(201).json({
+		if (isExist.length > 0) {
+			res.status(500).json({
 				success: true,
-				message: 'Instructor added successfully',
-				instructor: result, // Send the added instructor data in the response
+				message: 'Instructor already exist with the same email',
+			});
+		} else if (isExistLicence.length > 0) {
+			res.status(500).json({
+				success: true,
+				message: 'Instructor already exist with the same license number',
 			});
 		} else {
-			// If there was an issue saving the instructor, send a server error response
-			res.status(500).json({
-				success: false,
-				message: 'Failed to add instructor',
+			const newInstructor: InstructorInterface = new Instructor({
+				firstName,
+				lastName,
+				// hiringOn,
+				phone_number,
+				email,
+				hired_as,
+				address,
+				dob,
+				gender,
+				driver_licence_number,
+				DI_number,
 			});
+
+			// Save the new instructor to the database
+			const result = await newInstructor.save();
+			// Check if the instructor was saved successfully
+			if (result) {
+				// If the instructor was saved successfully, send success response
+				res.status(201).json({
+					success: true,
+					message: 'Instructor added successfully',
+					instructor: result, // Send the added instructor data in the response
+				});
+			} else {
+				// If there was an issue saving the instructor, send a server error response
+				res.status(500).json({
+					success: false,
+					message: 'Failed to add instructor',
+				});
+			}
 		}
 	} catch (error) {
 		console.error(error);

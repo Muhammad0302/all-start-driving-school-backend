@@ -168,13 +168,14 @@ const createLesson = async (req: Request, res: Response) => {
 
 		const lessonCompleted =
 			updateAssign.no_of_lesson_completed + no_of_lesson_compeleted;
-		console.log(
-			'The lesson completed and no of lesson is:',
-			lessonCompleted,
-			updateAssign.no_of_lesson
-		);
+		// console.log(
+		// 	'The lesson completed and no of lesson is:',
+		// 	lessonCompleted,
+		// 	updateAssign.no_of_lesson
+		// );
 		if (lessonCompleted >= updateAssign.no_of_lesson) {
 			updateAssign.endDate = new Date();
+			updateAssign.isLessonCompleted = true;
 			await updateAssign.save();
 		}
 

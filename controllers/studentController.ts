@@ -27,11 +27,17 @@ const addStudent = async (req: Request, res: Response) => {
 	try {
 		const supportiveIdPrefix = supportive_id === 'Online' ? 'E' : 'I';
 		const isExist = await Student.find({ email });
+		const isExistLicence = await Student.find({ licence_no: licence_no });
 
 		if (isExist.length > 0) {
 			res.status(500).json({
 				success: true,
-				message: 'User already exist with the same email',
+				message: 'Student already exist with the same email',
+			});
+		} else if (isExistLicence.length > 0) {
+			res.status(500).json({
+				success: true,
+				message: 'Student already exist with the same license number',
 			});
 		} else {
 			// Fetch the last registered student
@@ -382,7 +388,7 @@ const getAllStudents = async (req: Request, res: Response) => {
 const getAllSoftStudents = async (req: Request, res: Response) => {
 	try {
 		// Get the isDeleted parameter from the query string
-		const { isDeleted, isOld } = req.query;
+		const { isDeleted, isOld, isLessonCompleted } = req.query;
 
 		// Initialize the query object
 		let query = {};
@@ -395,6 +401,10 @@ const getAllSoftStudents = async (req: Request, res: Response) => {
 		if (isOld !== undefined && isOld !== 'NA') {
 			// @ts-ignore
 			query.isOld = isOld === 'true';
+		}
+		if (isLessonCompleted !== undefined && isLessonCompleted !== 'NA') {
+			// @ts-ignore
+			query.isLessonCompleted = isLessonCompleted;
 		}
 
 		// Retrieve all students from the database and populate their instructor and assignment data

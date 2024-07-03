@@ -12,6 +12,7 @@ interface assignInterface extends Document {
 	isOld: boolean;
 	isDeleted: boolean;
 	endDate: Date;
+	isLessonCompleted: boolean;
 	// paymentPlan: string;
 	// paymentType: string;
 	// advance: string;
@@ -65,6 +66,11 @@ const assignSchema = new Schema<assignInterface>(
 			type: Date,
 			default: null,
 		},
+		isLessonCompleted: {
+			type: Boolean,
+			default: false,
+		},
+
 		// paymentPlan: {
 		// 	type: String,
 		// 	required: true,
