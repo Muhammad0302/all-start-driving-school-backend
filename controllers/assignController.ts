@@ -354,13 +354,13 @@ const deletePackageAssigToStud = async (req: Request, res: Response) => {
 
 const changeInstructor = async (req: Request, res: Response) => {
 	try {
-		const { instructor_id, id } = req.body;
+		const { instructor_id, id, endDate } = req.body;
 
 		// Find the record to be updated
 		const existingRecord = await assignModel.findById(id);
 		await assignModel.findByIdAndUpdate(
 			id,
-			{ isOld: true, endDate: new Date() },
+			{ isOld: true, endDate: endDate },
 			{ new: true }
 		);
 
