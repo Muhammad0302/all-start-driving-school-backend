@@ -5,6 +5,7 @@ import {
 	addStudent,
 	updateStudent,
 	deleteStudent,
+	recoverStudent,
 	getAllStudents,
 	stdAssignToInstructor,
 	editStdAssignToInstructor,
@@ -25,6 +26,7 @@ const router = express.Router();
 router.post('/addStudent', verifyToken, addStudent);
 router.put('/updateStudent/:id', verifyToken, updateStudent);
 router.delete('/deleteStudent', verifyToken, deleteStudent);
+router.get('/recoverStudent', verifyToken, recoverStudent);
 router.get('/getAllStudents', verifyToken, getAllStudents);
 router.get('/getAllSoftStudents', verifyToken, getAllSoftStudents);
 router.get('/getAllAssignStudents', verifyToken, getAllAssignedStudents);

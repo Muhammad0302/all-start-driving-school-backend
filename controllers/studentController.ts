@@ -350,6 +350,58 @@ const deleteStudent = async (req: Request, res: Response) => {
 		});
 	}
 };
+
+const recoverStudent = async (req: Request, res: Response) => {
+	const { std_id, assign_id } = req.query;
+	try {
+		const count = await assignModel.countDocuments({
+			std_id: std_id,
+		});
+
+		// hot deletion
+		// const result = await assignModel.findByIdAndDelete(assign_id);
+
+		// soft deletion
+		const result = await assignModel.findByIdAndUpdate(
+			assign_id,
+			{ $set: { isDeleted: false } },
+			{ new: true }
+		);
+		// if (count < 2) {
+		// hot deletion
+		// await Student.findByIdAndDelete(std_id);
+
+		// soft deletion
+		const result1 = await Student.findByIdAndUpdate(
+			std_id,
+			{ $set: { isDeleted: false } },
+			{ new: true }
+		);
+		// }
+
+		// Check if the student was found and deleted successfully
+		if (result) {
+			// If the student was deleted successfully, send success response
+			res.status(200).json({
+				success: true,
+				message: 'Student recovered successfully',
+			});
+		} else {
+			// If the student was not found, send a not found response
+			res.status(404).json({
+				success: false,
+				message: 'Unable to recovered Student',
+			});
+		}
+	} catch (error) {
+		console.error(error);
+		// If there was an internal server error, send a server error response
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+		});
+	}
+};
 const getAllStudents = async (req: Request, res: Response) => {
 	try {
 		// Retrieve all students from the database and populate their instructor and assignment data
@@ -776,4 +828,5 @@ export {
 	getStudentsByInstructorId,
 	getAssignedStudents,
 	getAllSoftStudents,
+	recoverStudent,
 };

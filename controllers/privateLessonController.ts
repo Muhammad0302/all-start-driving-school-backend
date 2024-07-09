@@ -24,6 +24,7 @@ const getAllPrivateLessons = async (req: Request, res: Response) => {
 
 const createPrivateLesson = async (req: Request, res: Response) => {
 	try {
+		console.log('The pvt lesson adding is:', req.body);
 		const privateLesson = await PrivateLessonModel.create(req.body);
 		res.status(201).json({
 			success: true,

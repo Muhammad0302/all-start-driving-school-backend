@@ -4,6 +4,7 @@ import mongoose, { Model, Schema, Document } from 'mongoose';
 interface PrivateLessonInterface extends Document {
 	instructor_id: mongoose.Types.ObjectId;
 	student_name: String;
+	student_phone: String;
 	road_test_req: string;
 	initial_lesson_requested: string;
 }
@@ -16,6 +17,10 @@ const privateLessonSchema = new Schema<PrivateLessonInterface>(
 		},
 
 		student_name: {
+			type: String,
+			required: true,
+		},
+		student_phone: {
 			type: String,
 			required: true,
 		},
