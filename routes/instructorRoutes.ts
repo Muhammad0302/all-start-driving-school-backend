@@ -8,6 +8,7 @@ import {
 	getInstructorById,
 	getAllUnassignedInstructor,
 	getAllSoftInstructors,
+	getAllInstructors1,
 } from '../controllers/instructorController';
 
 const router = express.Router();
@@ -18,6 +19,7 @@ router.put('/updateinstructor/:id', verifyToken, updateInstructor);
 router.get('/getsingleinstructor/:id', verifyToken, getInstructorById);
 router.delete('/deleteinstructor/:id', verifyToken, deleteInstructor);
 router.get('/getallinstructors', verifyToken, getAllInstructors);
+router.get('/getallinstructors1', verifyToken, getAllInstructors1);
 router.get('/getallsoftinstructors', verifyToken, getAllSoftInstructors);
 router.get(
 	'/getAllUnassignedInstructor',

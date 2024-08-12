@@ -4,6 +4,7 @@ import StudentPaymentModel, {
 } from '../models/studentPaymentModel';
 import StudentModel from '../models/studentModel';
 import mongoose from 'mongoose';
+import assignModel from '../models/assignModel';
 
 const getAllPayments = async (req: Request, res: Response) => {
 	try {
@@ -63,6 +64,35 @@ const getAllPayments = async (req: Request, res: Response) => {
 
 const createPayment = async (req: Request, res: Response) => {
 	try {
+		// Convert req.body.amount to a number
+		const amount = Number(req.body.amount);
+
+		if (isNaN(amount)) {
+			return res.status(400).json({
+				success: false,
+				message: 'Invalid amount value',
+			});
+		}
+
+		// Find the record in the assign table by std_id
+		const studentAssignment = await assignModel.findOne({
+			std_id: req.body.std_id,
+			isDeleted: false, // Ensure you're only dealing with active records
+		});
+
+		if (!studentAssignment) {
+			return res.status(404).json({
+				success: false,
+				message: 'Student assignment not found',
+			});
+		}
+
+		// Update the amountPaid field by adding the new amount
+		studentAssignment.amountPaid += amount;
+
+		// Save the updated document
+		await studentAssignment.save();
+
 		const studentPayment = await StudentPaymentModel.create(req.body);
 		res.status(201).json({
 			success: true,

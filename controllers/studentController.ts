@@ -785,6 +785,7 @@ const getStudentById = async (req: Request, res: Response) => {
 		const student = await Student.findById(studentId);
 		const assign = await assignModel
 			.findOne({ std_id: studentId })
+			.populate('instructor_id')
 			.sort({ createdAt: -1, _id: -1 });
 		// Check if the student was found
 		if (student) {
