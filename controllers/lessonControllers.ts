@@ -162,6 +162,11 @@ const createLesson = async (req: Request, res: Response) => {
 			road_test_completion,
 		} = req.body;
 
+		const existanceStudent: any = await StudentModel.findById(std_id);
+		if (road_test_completion === 'yes') {
+			existanceStudent.roadTest = true;
+			existanceStudent.save();
+		}
 		const updateAssign: any = await assignModel
 			.findOne({ std_id })
 			.sort({ createdAt: -1, _id: -1 });
@@ -173,7 +178,11 @@ const createLesson = async (req: Request, res: Response) => {
 		// 	lessonCompleted,
 		// 	updateAssign.no_of_lesson
 		// );
-		if (lessonCompleted >= updateAssign.no_of_lesson) {
+		const studentRoadTest: any = await StudentModel.findById(std_id);
+		if (
+			lessonCompleted >= updateAssign.no_of_lesson &&
+			studentRoadTest.roadTest
+		) {
 			updateAssign.endDate = new Date();
 			updateAssign.isLessonCompleted = true;
 			await updateAssign.save();
@@ -182,7 +191,11 @@ const createLesson = async (req: Request, res: Response) => {
 		updateAssign.no_of_lesson_completed += no_of_lesson_compeleted;
 		// updateAssign.no_of_lesson -= no_of_lesson_compeleted;
 		// updateAssign.road_test = road_test_completion;
-		if (updateAssign.no_of_lesson_completed === updateAssign.no_of_lesson) {
+
+		if (
+			updateAssign.no_of_lesson_completed === updateAssign.no_of_lesson &&
+			studentRoadTest.roadTest
+		) {
 			const student: any = await StudentModel.findById(std_id);
 			student.lesson_completed = 'completed';
 			student.save();
@@ -198,31 +211,31 @@ const createLesson = async (req: Request, res: Response) => {
 
 		// Calculate the new balance
 		const newBalance = lastPayment ? lastPayment.Balance + Cr : Cr;
+		if (no_of_lesson_compeleted != null) {
+			const newCredit = {
+				instruct_id,
+				Cr,
+				rate,
+				tax,
+				issueDate,
+				noOfLessonToPay: no_of_lesson_compeleted,
+				Balance: newBalance,
+			};
+			await InstructorPaymentModel.create(newCredit);
 
-		const newCredit = {
-			instruct_id,
-			Cr,
-			rate,
-			tax,
-			issueDate,
-			noOfLessonToPay: no_of_lesson_compeleted,
-			Balance: newBalance,
-		};
-		await InstructorPaymentModel.create(newCredit);
+			const newLessonData = {
+				total_lesson,
+				std_id,
+				instruct_id,
+				no_of_lesson_compeleted,
+				road_test_completion,
+			};
 
-		const newLessonData = {
-			total_lesson,
-			std_id,
-			instruct_id,
-			no_of_lesson_compeleted,
-			road_test_completion,
-		};
-
-		const lesson = await LessonModel.create(newLessonData);
+			const lesson = await LessonModel.create(newLessonData);
+		}
 		res.status(201).json({
 			success: true,
 			message: 'Lesson created successfully',
-			lesson: lesson,
 		});
 	} catch (error) {
 		console.error(error);

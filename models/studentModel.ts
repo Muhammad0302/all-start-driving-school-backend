@@ -22,6 +22,7 @@ interface StudentInterface {
 	licence_expiry_date: Date;
 	course_start_date: Date;
 	isDeleted: boolean;
+	roadTest: boolean;
 }
 
 const studentSchema = new Schema<StudentInterface>(
@@ -107,6 +108,10 @@ const studentSchema = new Schema<StudentInterface>(
 			required: true,
 		},
 		isDeleted: {
+			type: Boolean,
+			default: false,
+		},
+		roadTest: {
 			type: Boolean,
 			default: false,
 		},
